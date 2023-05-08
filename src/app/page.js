@@ -70,17 +70,6 @@ function LastBlockInfo({ height, address, reward, accumulate, filter_bits, vdf_t
   )
 }
 
-// function SummaryChart() {
-//   return (
-//     <div>
-//       <div className="flex flex-row pl-1 pt-4 pb-1">
-//         <FaChartPie />
-//         <SectionTitle title="Blocks in 24 hours" />
-//       </div>
-//     </div>
-//   )
-// }
-
 function Status({ challenge, height, iters_per_sec, total_size, last_block_info }) {
   return (
     <div className="bg-gray-50 p-1">
@@ -94,30 +83,44 @@ function Status({ challenge, height, iters_per_sec, total_size, last_block_info 
   )
 }
 
-function Summary({num_blocks}) {
+function Summary({ num_blocks, high_height, low_height, hours }) {
   return (
     <div className="bg-gray-50 p-1">
       <div className="flex flex-row pl-1 pt-4 pb-1">
         <FaChartPie />
-        <SectionTitle title="Blocks in 24 hours" />
+        <SectionTitle title={`Blocks in ${hours ? hours : '...'} hours`} />
       </div>
       <StatusEntry name="Blocks" value={formatNumberString(num_blocks)} />
-      <StatusEntry name="Avg min/block" value={formatNumberString(24 * 60 / num_blocks) + " min"} />
+      <StatusEntry name="Time per block" value={formatNumberString(hours * 60 / num_blocks) + " min"} />
+      <StatusEntry name="High height" value={formatNumberString(high_height)} />
+      <StatusEntry name="Low height" value={formatNumberString(low_height)} />
     </div>
   )
 }
 
-export default function Home() {
+function useTimelordStatus() {
   const [status, setStatus] = useState();
-  const [summary, setSummary] = useState();
-  useEffect(function () {
+  if (!status) {
     axios.get("http://localhost:39393/api/status?rn=" + Math.random()).then(function (res) {
       setStatus(res.data);
     });
-    axios.get("http://localhost:39393/api/summary?hours=24&rn=" + Math.random()).then(function (res) {
+  }
+  return [status];
+}
+
+function useTimelordSummary(hours) {
+  const [summary, setSummary] = useState();
+  if (!summary) {
+    axios.get("http://localhost:39393/api/summary?hours=" + hours + "&rn=" + Math.random()).then(function (res) {
       setSummary(res.data);
     });
-  }, []);
+  }
+  return [summary];
+}
+
+export default function Home() {
+  const [status] = useTimelordStatus();
+  const [summary] = useTimelordSummary(24);
   return (
     <main className="container p-2">
       <Title />
