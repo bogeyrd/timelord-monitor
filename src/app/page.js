@@ -1,7 +1,7 @@
 "use client";
 
 import axios from "axios";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { SiBlockchaindotcom } from "react-icons/si";
 import { FaChartPie } from "react-icons/fa";
 
