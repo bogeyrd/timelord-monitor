@@ -2,6 +2,8 @@
 
 import axios from "axios";
 import { useState, useEffect } from "react";
+import { SiBlockchaindotcom } from "react-icons/si";
+import { FaChartPie } from "react-icons/fa";
 
 function replaceUndefined(v) {
   if (typeof v === "undefined") {
@@ -43,14 +45,17 @@ function StatusEntry({ name, value }) {
 
 function SectionTitle({ title }) {
   return (
-    <div className="text-xs pl-1 pt-4 pb-1 italic">{title}</div>
+    <div className="text-xs italic pl-2">{title}</div>
   )
 }
 
 function LastBlockInfo({ height, address, reward, accumulate, filter_bits, vdf_time, vdf_iters, vdf_speed, challenge_difficulty, block_difficulty }) {
   return (
     <div>
-      <SectionTitle title="Last block information" />
+      <div className="flex flex-row pl-1 pt-4 pb-1">
+        <SiBlockchaindotcom />
+        <SectionTitle title="Last block information" />
+      </div>
       <StatusEntry name="Height" value={formatNumberString(height)} />
       <StatusEntry name="Miner" value={address} />
       <StatusEntry name="Reward" value={replaceUndefined(reward) + " BHD"} />
@@ -65,6 +70,17 @@ function LastBlockInfo({ height, address, reward, accumulate, filter_bits, vdf_t
   )
 }
 
+// function SummaryChart() {
+//   return (
+//     <div>
+//       <div className="flex flex-row pl-1 pt-4 pb-1">
+//         <FaChartPie />
+//         <SectionTitle title="Blocks in 24 hours" />
+//       </div>
+//     </div>
+//   )
+// }
+
 function Status({ challenge, height, iters_per_sec, total_size, last_block_info }) {
   return (
     <div className="bg-gray-50 p-1">
@@ -78,18 +94,36 @@ function Status({ challenge, height, iters_per_sec, total_size, last_block_info 
   )
 }
 
+function Summary({num_blocks}) {
+  return (
+    <div className="bg-gray-50 p-1">
+      <div className="flex flex-row pl-1 pt-4 pb-1">
+        <FaChartPie />
+        <SectionTitle title="Blocks in 24 hours" />
+      </div>
+      <StatusEntry name="Blocks" value={formatNumberString(num_blocks)} />
+      <StatusEntry name="Avg min/block" value={formatNumberString(24 * 60 / num_blocks) + " min"} />
+    </div>
+  )
+}
+
 export default function Home() {
   const [status, setStatus] = useState();
-  useEffect(function() {
-    axios.get("http://localhost:39393/api/status?rn=" + Math.random()).then(function(res) {
-      console.log(res.data);
+  const [summary, setSummary] = useState();
+  useEffect(function () {
+    axios.get("http://localhost:39393/api/status?rn=" + Math.random()).then(function (res) {
       setStatus(res.data);
+    });
+    axios.get("http://localhost:39393/api/summary?hours=24&rn=" + Math.random()).then(function (res) {
+      setSummary(res.data);
     });
   }, []);
   return (
     <main className="container p-2">
       <Title />
       <Status {...status} />
+      <hr />
+      <Summary {...summary} />
     </main>
   );
 }
