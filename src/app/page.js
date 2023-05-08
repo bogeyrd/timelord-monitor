@@ -26,6 +26,26 @@ function formatNumberString(n) {
   return replaceUndefined(n);
 }
 
+function useTimelordStatus() {
+  const [status, setStatus] = useState();
+  if (!status) {
+    axios.get("http://localhost:39393/api/status?rn=" + Math.random()).then(function (res) {
+      setStatus(res.data);
+    });
+  }
+  return [status];
+}
+
+function useTimelordSummary(hours) {
+  const [summary, setSummary] = useState();
+  if (!summary) {
+    axios.get("http://localhost:39393/api/summary?hours=" + hours + "&rn=" + Math.random()).then(function (res) {
+      setSummary(res.data);
+    });
+  }
+  return [summary];
+}
+
 function Title() {
   return (
     <div className="flex flex-row bg-blue-200 p-1">
@@ -96,26 +116,6 @@ function Summary({ num_blocks, high_height, low_height, hours }) {
       <StatusEntry name="Low height" value={formatNumberString(low_height)} />
     </div>
   )
-}
-
-function useTimelordStatus() {
-  const [status, setStatus] = useState();
-  if (!status) {
-    axios.get("http://localhost:39393/api/status?rn=" + Math.random()).then(function (res) {
-      setStatus(res.data);
-    });
-  }
-  return [status];
-}
-
-function useTimelordSummary(hours) {
-  const [summary, setSummary] = useState();
-  if (!summary) {
-    axios.get("http://localhost:39393/api/summary?hours=" + hours + "&rn=" + Math.random()).then(function (res) {
-      setSummary(res.data);
-    });
-  }
-  return [summary];
 }
 
 export default function Home() {
