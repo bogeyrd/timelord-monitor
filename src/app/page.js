@@ -8,6 +8,13 @@ import { FaChartPie, FaStream } from 'react-icons/fa';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Pie } from 'react-chartjs-2';
 
+function getApiHost() {
+  if (process.env.NODE_ENV === 'production') {
+    return process.env.apiUrl;
+  }
+  return 'http://localhost:39393';
+}
+
 function replaceUndefined(v) {
   if (typeof v === 'undefined') {
     return '...';
@@ -32,7 +39,7 @@ function formatNumberString(n) {
 function useTimelordStatus() {
   const [status, setStatus] = useState();
   const query = () => {
-    axios.get('http://localhost:39393/api/status?rn=' + Math.random()).then(function(res) {
+    axios.get(getApiHost() + '/api/status?rn=' + Math.random()).then(function(res) {
       setStatus(res.data);
     });
   };
@@ -42,7 +49,7 @@ function useTimelordStatus() {
 function useTimelordSummary(hours) {
   const [summary, setSummary] = useState();
   const query = () => {
-    axios.get('http://localhost:39393/api/summary?hours=' + hours + '&rn=' + Math.random()).then(function(res) {
+    axios.get(getApiHost() + '/api/summary?hours=' + hours + '&rn=' + Math.random()).then(function(res) {
       setSummary(res.data);
     });
   };
