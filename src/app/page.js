@@ -1,7 +1,7 @@
 "use client";
 
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SiBlockchaindotcom } from "react-icons/si";
 import { FaChartPie } from "react-icons/fa";
 
@@ -28,22 +28,22 @@ function formatNumberString(n) {
 
 function useTimelordStatus() {
   const [status, setStatus] = useState();
-  if (!status) {
-    axios.get("http://localhost:39393/api/status?rn=" + Math.random()).then(function (res) {
+  const query = () => {
+    axios.get("http://localhost:39393/api/status?rn=" + Math.random()).then(function(res) {
       setStatus(res.data);
     });
-  }
-  return [status];
+  };
+  return [status, query];
 }
 
 function useTimelordSummary(hours) {
   const [summary, setSummary] = useState();
-  if (!summary) {
-    axios.get("http://localhost:39393/api/summary?hours=" + hours + "&rn=" + Math.random()).then(function (res) {
+  const query = () => {
+    axios.get("http://localhost:39393/api/summary?hours=" + hours + "&rn=" + Math.random()).then(function(res) {
       setSummary(res.data);
     });
-  }
-  return [summary];
+  };
+  return [summary, query];
 }
 
 function Title() {
@@ -119,8 +119,12 @@ function Summary({ num_blocks, high_height, low_height, hours }) {
 }
 
 export default function Home() {
-  const [status] = useTimelordStatus();
-  const [summary] = useTimelordSummary(24);
+  const [status, queryStatus] = useTimelordStatus();
+  const [summary, querySummary] = useTimelordSummary(24);
+  useEffect(() => {
+    queryStatus();
+    querySummary();
+  }, []);
   return (
     <main className="container p-2">
       <Title />
