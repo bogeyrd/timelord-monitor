@@ -115,7 +115,7 @@ function Status({ challenge, height, iters_per_sec, total_size, last_block_info 
       <StatusEntry name='Challenge' value={shortHashString(challenge)} />
       <StatusEntry name='VDF speed' value={replaceUndefined(iters_per_sec) + ' ips'} />
       <StatusEntry name='Incoming height' value={formatNumberString(height)} />
-      <StatusEntry name='Netspace' value={total_size} />
+      <StatusEntry name='Netspace' value={formatNumberString(total_size)} />
       <LastBlockInfo {...last_block_info} />
     </div>
   )
