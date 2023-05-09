@@ -3,7 +3,7 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { SiBlockchaindotcom } from 'react-icons/si';
-import { FaChartPie, FaStream } from 'react-icons/fa';
+import { FaChartPie, FaStream, FaRocket } from 'react-icons/fa';
 
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Pie } from 'react-chartjs-2';
@@ -70,8 +70,8 @@ function Separator({ Icon, title }) {
 
 function Title() {
   return (
-    <div className='flex flex-row bg-blue-200 p-1'>
-      <div className='text-xl font-bold w-auto'>Timelord Status</div>
+    <div className='flex flex-row bg-blue-100 p-1'>
+      <div className='text-xl font-bold w-auto'>Timelord Service</div>
       <div className='text-xs text-right grow self-center'>HOST: unavailable</div>
     </div>
   )
@@ -112,9 +112,11 @@ function LastBlockInfo({ height, address, reward, accumulate, filter_bits, vdf_t
 function Status({ challenge, height, iters_per_sec, total_size, last_block_info }) {
   return (
     <div className='bg-gray-50 p-1'>
-      <StatusEntry name='Challenge' value={shortHashString(challenge)} />
-      <StatusEntry name='VDF speed' value={replaceUndefined(iters_per_sec) + ' ips'} />
+      <StatusEntry name='Version' value={'beta 0.1.0'} />
+      <StatusEntry name='VDF speed' value={formatNumberString(iters_per_sec) + ' ips'} />
+      <Separator Icon={FaRocket} title='Arriving' />
       <StatusEntry name='Incoming height' value={formatNumberString(height)} />
+      <StatusEntry name='Challenge' value={shortHashString(challenge)} />
       <StatusEntry name='Netspace' value={formatNumberString(total_size)} />
       <LastBlockInfo {...last_block_info} />
     </div>
@@ -167,7 +169,7 @@ function Summary({ num_blocks, high_height, low_height, hours, summary }) {
     <div className='bg-gray-50 p-1'>
       <Separator Icon={FaChartPie} title={'Blocks in ' + (hours ? (hours + ' hours') : '...')} />
       <SummaryPie summary={summary} />
-      <Separator Icon={FaStream} title='Summary' />
+      <Separator Icon={FaStream} title={`Summary in ${hours} hours`} />
       <StatusEntry name='Total blocks' value={formatNumberString(num_blocks)} />
       <StatusEntry name='Time per block' value={formatNumberString(hours * 60 / num_blocks) + ' min'} />
       <StatusEntry name='From height' value={formatNumberString(low_height)} />
