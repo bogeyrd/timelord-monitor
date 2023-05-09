@@ -3,7 +3,7 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { SiBlockchaindotcom } from 'react-icons/si';
-import { FaChartPie } from 'react-icons/fa';
+import { FaChartPie, FaStream } from 'react-icons/fa';
 
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Pie } from 'react-chartjs-2';
@@ -73,14 +73,14 @@ function Title() {
 function StatusEntry({ name, value }) {
   return (
     <div className='p-1 text-sm flex flex-row'>
-      <div className='font-bold'>{name}</div><div className='font-mono text-right grow'>{replaceUndefined(value)}</div>
+      <div>{name}</div><div className='font-mono text-right grow'>{replaceUndefined(value)}</div>
     </div>
   )
 }
 
 function SectionTitle({ title }) {
   return (
-    <div className='text-xs italic pl-2'>{title}</div>
+    <div className='font-bold text-xs italic pl-2'>{title}</div>
   )
 }
 
@@ -152,7 +152,7 @@ function SummaryPie({ summary }) {
     data.datasets[0].backgroundColor.push(colorWithAlpha(colors[i], '0.7'));
   }
 
-  return <Pie data={data} />;
+  return <Pie className='pb-4' data={data} />;
 }
 
 function Summary({ num_blocks, high_height, low_height, hours, summary }) {
@@ -160,6 +160,7 @@ function Summary({ num_blocks, high_height, low_height, hours, summary }) {
     <div className='bg-gray-50 p-1'>
       <Separator Icon={FaChartPie} title={'Blocks in ' + (hours ? (hours + ' hours') : '...')} />
       <SummaryPie summary={summary} />
+      <Separator Icon={FaStream} title='Summary' />
       <StatusEntry name='Total blocks' value={formatNumberString(num_blocks)} />
       <StatusEntry name='Time per block' value={formatNumberString(hours * 60 / num_blocks) + ' min'} />
       <StatusEntry name='From height' value={formatNumberString(low_height)} />
