@@ -68,11 +68,11 @@ function Separator({ Icon, title }) {
   );
 }
 
-function Title() {
+function Title({ server_ip }) {
   return (
     <div className='flex flex-row bg-blue-100 p-1'>
       <div className='text-xl font-bold w-auto'>Timelord Service</div>
-      <div className='text-xs text-right grow self-center'>HOST: unavailable</div>
+      <div className='text-xs text-right grow self-center'>HOST: {server_ip}</div>
     </div>
   )
 }
@@ -189,7 +189,7 @@ export default function Home() {
   }, []);
   return (
     <main className='container p-2'>
-      <Title />
+      <Title {...status} />
       <Status {...status} />
       <Summary {...summary} />
     </main>
