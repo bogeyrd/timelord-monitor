@@ -44,7 +44,7 @@ function formatSeconds(secs) {
     secs = 0;
   }
   const s = secs % 60;
-  const m = Math.floor(secs / 60);
+  const m = Math.floor(secs / 60) % 60;
   const h = Math.floor(m / 60);
   if (h > 0) {
     return `${h}:${m}:${s}`;
