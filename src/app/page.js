@@ -2,7 +2,7 @@
 
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { FaBitcoin, FaLandmark, FaChartPie, FaStream, FaRocket } from 'react-icons/fa';
+import { FaBitcoin, FaLandmark, FaChartPie, FaStream, FaRocket, FaClock } from 'react-icons/fa';
 
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Pie } from 'react-chartjs-2';
@@ -37,6 +37,28 @@ function formatNumberString(n) {
     return n.toLocaleString();
   }
   return replaceUndefined(n);
+}
+
+function formatSeconds(secs) {
+  if (typeof secs === 'undefined' || secs === null) {
+    secs = 0;
+  }
+  const s = secs % 60;
+  const m = Math.floor(secs / 60);
+  const h = Math.floor(m / 60);
+  if (h > 0) {
+    return `${h}:${m}:${s}`;
+  } else {
+    return `${m}:${s}`;
+  }
+}
+
+function formatLocalTime(timestamp) {
+  if (typeof timestamp === 'undefined' || timestamp === null) {
+    return '...';
+  }
+  let the_time = new Date(timestamp * 1000);
+  return the_time.toLocaleString('en-US');
 }
 
 /**
@@ -113,13 +135,37 @@ function StatusBase({ iters_per_sec }) {
   )
 }
 
-function StatusArriving({ height, challenge, total_size }) {
+function StatusArriving({ height, challenge, total_size, vdf_pack }) {
+  let requests = null;
+  let timestamp = null;
+  if (vdf_pack) {
+    requests = vdf_pack.requests;
+    timestamp = vdf_pack.timestamp;
+  }
+  let best = null;
+  if (requests) {
+    for (let req of requests) {
+      if (best === null) {
+        best = req;
+      } else if (req.iters < best.iters) {
+        best = req;
+      }
+    }
+  }
+  let estimated_seconds = 0;
+  if (best) {
+    estimated_seconds = best.estimated_seconds;
+  };
   return (
     <>
       <SectionTitle Icon={FaRocket} title='Arriving' />
       <StatusEntry name='Incoming height' value={formatNumberString(height)} />
       <StatusEntry name='Challenge' value={shortHashString(challenge)} />
       <StatusEntry name='Netspace' value={formatNumberString(total_size)} />
+      <SectionTitle Icon={FaClock} title='Next block' />
+      <StatusEntry name='Estimated time' value={formatSeconds(estimated_seconds)} />
+      <StatusEntry name='Previous block' value={formatLocalTime(timestamp)} />
+      <StatusEntry name='Next block' value={formatLocalTime(timestamp ? timestamp + estimated_seconds : null)} />
     </>
   )
 }
@@ -143,11 +189,11 @@ function StatusLastBlockInfo({ hash, height, address, reward, accumulate, filter
   )
 }
 
-function Status({ challenge, height, iters_per_sec, total_size, last_block_info }) {
+function Status({ challenge, height, iters_per_sec, total_size, last_block_info, vdf_pack }) {
   return (
     <>
       <StatusBase iters_per_sec={iters_per_sec} />
-      <StatusArriving height={height} challenge={challenge} total_size={total_size} />
+      <StatusArriving height={height} challenge={challenge} total_size={total_size} vdf_pack={vdf_pack} />
       <StatusLastBlockInfo {...last_block_info} />
     </>
   )
