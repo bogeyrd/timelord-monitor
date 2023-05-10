@@ -2,11 +2,14 @@
 
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { SiBlockchaindotcom } from 'react-icons/si';
-import { FaChartPie, FaStream, FaRocket } from 'react-icons/fa';
+import { FaBitcoin, FaLandmark, FaChartPie, FaStream, FaRocket } from 'react-icons/fa';
 
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Pie } from 'react-chartjs-2';
+
+/**
+ * Utilities
+ */
 
 function getApiHost() {
   if (process.env.NODE_ENV === 'production') {
@@ -36,6 +39,10 @@ function formatNumberString(n) {
   return replaceUndefined(n);
 }
 
+/**
+ * React status
+ */
+
 function useTimelordStatus() {
   const [status, setStatus] = useState();
   const query = () => {
@@ -56,25 +63,19 @@ function useTimelordSummary(hours) {
   return [summary, query];
 }
 
-function Separator({ Icon, title }) {
+/**
+ * Base components
+ */
+
+function SectionTitle({ Icon, title }) {
   return (
     <>
-      <hr />
-      <div className='flex flex-row pl-1 pt-4 pb-1'>
+      <div className='flex flex-row py-2'>
         <Icon />
-        <SectionTitle title={title} />
+        <div className='font-bold text-xs italic pl-2'>{title}</div>
       </div>
     </>
   );
-}
-
-function Title({ server_ip }) {
-  return (
-    <div className='flex flex-row bg-blue-100 p-1'>
-      <div className='text-xl font-bold w-auto'>Timelord Service</div>
-      <div className='text-xs text-right grow self-center'>HOST: {server_ip}</div>
-    </div>
-  )
 }
 
 function StatusEntry({ name, value }) {
@@ -85,16 +86,48 @@ function StatusEntry({ name, value }) {
   )
 }
 
-function SectionTitle({ title }) {
+/**
+ * Title and header
+ */
+
+function Title({ server_ip }) {
   return (
-    <div className='font-bold text-xs italic pl-2'>{title}</div>
+    <div className='flex flex-row text-white bg-gray-500 p-2'>
+      <div className='text-xl font-bold w-auto'>Timelord Service</div>
+      <div className='text-xs text-right grow self-center'>HOST: {server_ip}</div>
+    </div>
   )
 }
 
-function LastBlockInfo({ hash, height, address, reward, accumulate, filter_bits, vdf_time, vdf_iters, vdf_speed, challenge_difficulty, block_difficulty }) {
+/**
+ * Base status
+ */
+
+function StatusBase({ iters_per_sec }) {
   return (
-    <div>
-      <Separator Icon={SiBlockchaindotcom} title='Last block info.' />
+    <>
+      <SectionTitle Icon={FaLandmark} title='Base' />
+      <StatusEntry name='Version' value={'beta 0.1.0'} />
+      <StatusEntry name='VDF speed' value={formatNumberString(iters_per_sec) + ' ips'} />
+    </>
+  )
+}
+
+function StatusArriving({ height, challenge, total_size }) {
+  return (
+    <>
+      <SectionTitle Icon={FaRocket} title='Arriving' />
+      <StatusEntry name='Incoming height' value={formatNumberString(height)} />
+      <StatusEntry name='Challenge' value={shortHashString(challenge)} />
+      <StatusEntry name='Netspace' value={formatNumberString(total_size)} />
+    </>
+  )
+}
+
+function StatusLastBlockInfo({ hash, height, address, reward, accumulate, filter_bits, vdf_time, vdf_iters, vdf_speed, challenge_difficulty, block_difficulty }) {
+  return (
+    <>
+      <SectionTitle Icon={FaBitcoin} title='Last block info.' />
       <StatusEntry name='Hash' value={shortHashString(hash)} />
       <StatusEntry name='Height' value={formatNumberString(height)} />
       <StatusEntry name='Miner' value={address} />
@@ -106,25 +139,25 @@ function LastBlockInfo({ hash, height, address, reward, accumulate, filter_bits,
       <StatusEntry name='VDF iterations' value={formatNumberString(vdf_iters)} />
       <StatusEntry name='Challenge difficulty' value={formatNumberString(challenge_difficulty)} />
       <StatusEntry name='Block difficulty' value={formatNumberString(block_difficulty)} />
-    </div>
+    </>
   )
 }
 
 function Status({ challenge, height, iters_per_sec, total_size, last_block_info }) {
   return (
-    <div className='bg-gray-50 p-1'>
-      <StatusEntry name='Version' value={'beta 0.1.0'} />
-      <StatusEntry name='VDF speed' value={formatNumberString(iters_per_sec) + ' ips'} />
-      <Separator Icon={FaRocket} title='Arriving' />
-      <StatusEntry name='Incoming height' value={formatNumberString(height)} />
-      <StatusEntry name='Challenge' value={shortHashString(challenge)} />
-      <StatusEntry name='Netspace' value={formatNumberString(total_size)} />
-      <LastBlockInfo {...last_block_info} />
-    </div>
+    <>
+      <StatusBase iters_per_sec={iters_per_sec} />
+      <StatusArriving height={height} challenge={challenge} total_size={total_size} />
+      <StatusLastBlockInfo {...last_block_info} />
+    </>
   )
 }
 
-function SummaryPie({ summary }) {
+/**
+ * Summary
+ */
+
+function SummaryPie({ hours, summary }) {
   const data = {
     labels: [],
     datasets: [
@@ -162,37 +195,53 @@ function SummaryPie({ summary }) {
     data.datasets[0].backgroundColor.push(colorWithAlpha(colors[i], '0.7'));
   }
 
-  return <Pie className='pb-4' data={data} />;
+  return (
+    <>
+      <SectionTitle Icon={FaChartPie} title={'Blocks in ' + (hours ? (hours + ' hours') : '...')} />
+      <Pie className='pb-4' data={data} />
+    </>
+  )
+}
+
+function SummaryStatus({ num_blocks, high_height, low_height, hours }) {
+  return (
+    <>
+      <SectionTitle Icon={FaStream} title={`Summary in ${hours} hours`} />
+      <StatusEntry name='Total blocks' value={formatNumberString(num_blocks)} />
+      <StatusEntry name='Time per block' value={formatNumberString(hours * 60 / num_blocks) + ' min'} />
+      <StatusEntry name='Block range' value={formatNumberString(low_height) + ' ... ' + formatNumberString(high_height)} />
+    </>
+  )
 }
 
 function Summary({ num_blocks, high_height, low_height, hours, summary }) {
   return (
-    <div className='bg-gray-50 p-1'>
-      <Separator Icon={FaChartPie} title={'Blocks in ' + (hours ? (hours + ' hours') : '...')} />
-      <SummaryPie summary={summary} />
-      <Separator Icon={FaStream} title={`Summary in ${hours} hours`} />
-      <StatusEntry name='Total blocks' value={formatNumberString(num_blocks)} />
-      <StatusEntry name='Time per block' value={formatNumberString(hours * 60 / num_blocks) + ' min'} />
-      <StatusEntry name='From height' value={formatNumberString(low_height)} />
-      <StatusEntry name='To height' value={formatNumberString(high_height)} />
-    </div>
+    <>
+      <SummaryPie summary={summary} hours={hours} />
+      <SummaryStatus num_blocks={num_blocks} hours={hours} low_height={low_height} high_height={high_height} />
+    </>
   )
 }
+
+/**
+ * Main
+ */
 
 export default function Home() {
   const [status, queryStatus] = useTimelordStatus();
   const [summary, querySummary] = useTimelordSummary(24);
   useEffect(() => {
     ChartJS.register(ArcElement, Tooltip, Legend);
-
     queryStatus();
     querySummary();
   }, []);
   return (
-    <main className='container p-2'>
+    <main className='container'>
       <Title {...status} />
-      <Status {...status} />
-      <Summary {...summary} />
+      <div className='p-3'>
+        <Status {...status} />
+        <Summary {...summary} />
+      </div>
     </main>
   );
 }
