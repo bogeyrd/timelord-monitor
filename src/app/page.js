@@ -91,10 +91,11 @@ function SectionTitle({ title }) {
   )
 }
 
-function LastBlockInfo({ height, address, reward, accumulate, filter_bits, vdf_time, vdf_iters, vdf_speed, challenge_difficulty, block_difficulty }) {
+function LastBlockInfo({ hash, height, address, reward, accumulate, filter_bits, vdf_time, vdf_iters, vdf_speed, challenge_difficulty, block_difficulty }) {
   return (
     <div>
       <Separator Icon={SiBlockchaindotcom} title='Last block info.' />
+      <StatusEntry name='Hash' value={shortHashString(hash)} />
       <StatusEntry name='Height' value={formatNumberString(height)} />
       <StatusEntry name='Miner' value={address} />
       <StatusEntry name='Reward' value={replaceUndefined(reward) + ' BHD'} />
