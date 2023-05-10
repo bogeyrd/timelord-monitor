@@ -114,7 +114,7 @@ function StatusEntry({ name, value }) {
 
 function Title({ server_ip }) {
   return (
-    <div className='flex flex-row text-white bg-gray-500 p-2'>
+    <div className='flex flex-row text-white bg-green-500 p-2'>
       <div className='text-xl font-bold w-auto'>Timelord Service</div>
       <div className='text-xs text-right grow self-center'>HOST: {server_ip}</div>
     </div>
