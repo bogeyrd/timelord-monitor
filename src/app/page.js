@@ -68,7 +68,7 @@ function formatLocalTime(timestamp) {
 function useTimelordStatus() {
   const [status, setStatus] = useState();
   const query = () => {
-    axios.get(getApiHost() + '/api/status?rn=' + Math.random()).then(function(res) {
+    axios.get(getApiHost() + '/api/status?rn=' + Math.random()).then(function (res) {
       setStatus(res.data);
     });
   };
@@ -78,7 +78,7 @@ function useTimelordStatus() {
 function useTimelordSummary(hours) {
   const [summary, setSummary] = useState();
   const query = () => {
-    axios.get(getApiHost() + '/api/summary?hours=' + hours + '&rn=' + Math.random()).then(function(res) {
+    axios.get(getApiHost() + '/api/summary?hours=' + hours + '&rn=' + Math.random()).then(function (res) {
       setSummary(res.data);
     });
   };
@@ -91,12 +91,10 @@ function useTimelordSummary(hours) {
 
 function SectionTitle({ Icon, title }) {
   return (
-    <>
-      <div className='flex flex-row py-2'>
-        <Icon />
-        <div className='font-bold text-xs italic pl-2'>{title}</div>
-      </div>
-    </>
+    <div className='flex flex-row py-2 lg:pt-16'>
+      <Icon />
+      <div className='font-bold text-xs italic pl-2'>{title}</div>
+    </div>
   );
 }
 
@@ -108,15 +106,21 @@ function StatusEntry({ name, value }) {
   )
 }
 
+function Description({desc}) {
+  return (
+    <span className='line-clamp-2 text-xs text-gray-500'>{desc}</span>
+  )
+}
+
 /**
  * Title and header
  */
 
 function Title({ server_ip }) {
   return (
-    <div className='flex flex-row text-white bg-green-500 p-2'>
-      <div className='text-xl font-bold w-auto'>Timelord Service</div>
-      <div className='text-xs text-right grow self-center'>HOST: {server_ip}</div>
+    <div className='flex flex-row p-2 bg-gray-300 lg:bg-inherit lg:flex-col lg:pt-8'>
+      <div className='text-xl font-bold w-auto lg:self-center lg:text-3xl lg:pb-2'>Timelord Service</div>
+      <div className='text-xs text-right grow self-center'><span className='font-bold'>HOST</span>{' '}<span className='underline'>{server_ip}</span></div>
     </div>
   )
 }
@@ -173,7 +177,7 @@ function StatusArriving({ height, challenge, total_size, vdf_pack }) {
 function StatusLastBlockInfo({ hash, height, address, reward, accumulate, filter_bits, vdf_time, vdf_iters, vdf_speed, challenge_difficulty, block_difficulty }) {
   return (
     <>
-      <SectionTitle Icon={FaBitcoin} title='Last block info.' />
+      <SectionTitle Icon={FaBitcoin} title='Last block' />
       <StatusEntry name='Hash' value={shortHashString(hash)} />
       <StatusEntry name='Height' value={formatNumberString(height)} />
       <StatusEntry name='Miner' value={address} />
@@ -191,11 +195,11 @@ function StatusLastBlockInfo({ hash, height, address, reward, accumulate, filter
 
 function Status({ challenge, height, iters_per_sec, total_size, last_block_info, vdf_pack }) {
   return (
-    <>
+    <div className='md:w-[450px]'>
       <StatusBase iters_per_sec={iters_per_sec} />
       <StatusArriving height={height} challenge={challenge} total_size={total_size} vdf_pack={vdf_pack} />
       <StatusLastBlockInfo {...last_block_info} />
-    </>
+    </div>
   )
 }
 
@@ -241,10 +245,13 @@ function SummaryPie({ hours, summary }) {
     data.datasets[0].backgroundColor.push(colorWithAlpha(colors[i], '0.7'));
   }
 
+  const hours_str = hours ? (hours + ' hours') : '...';
+
   return (
     <>
-      <SectionTitle Icon={FaChartPie} title={'Blocks in ' + (hours ? (hours + ' hours') : '...')} />
-      <Pie className='pb-4' data={data} />
+      <SectionTitle Icon={FaChartPie} title={'Blocks in ' + hours_str} />
+      <Description desc={`The chart following shows the information of the blocks for the past ${hours_str}.`} />
+      <Pie className='lg:mt-8' data={data} />
     </>
   )
 }
@@ -262,10 +269,10 @@ function SummaryStatus({ num_blocks, high_height, low_height, hours }) {
 
 function Summary({ num_blocks, high_height, low_height, hours, summary }) {
   return (
-    <>
-      <SummaryPie summary={summary} hours={hours} />
+    <div className='lg:w-[450px]'>
       <SummaryStatus num_blocks={num_blocks} hours={hours} low_height={low_height} high_height={high_height} />
-    </>
+      <SummaryPie summary={summary} hours={hours} />
+    </div>
   )
 }
 
@@ -282,11 +289,13 @@ export default function Home() {
     querySummary();
   }, []);
   return (
-    <main className='container'>
-      <Title {...status} />
-      <div className='p-3'>
-        <Status {...status} />
-        <Summary {...summary} />
+    <main className='flex flex-col items-center'>
+      <div className='w-full bg-gray-100 lg:w-[1000px] lg:bg-white'>
+        <Title {...status} />
+        <div className='p-3 lg:flex lg:flex-row lg:justify-between'>
+          <Status {...status} />
+          <Summary {...summary} />
+        </div>
       </div>
     </main>
   );
