@@ -195,7 +195,7 @@ function StatusLastBlockInfo({ hash, height, address, reward, accumulate, filter
 
 function Status({ challenge, height, iters_per_sec, total_size, last_block_info, vdf_pack }) {
   return (
-    <div className='md:w-[450px]'>
+    <div>
       <StatusBase iters_per_sec={iters_per_sec} />
       <StatusArriving height={height} challenge={challenge} total_size={total_size} vdf_pack={vdf_pack} />
       <StatusLastBlockInfo {...last_block_info} />
