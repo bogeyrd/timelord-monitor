@@ -91,7 +91,7 @@ function useTimelordSummary(hours) {
 
 function SectionTitle({ Icon, title }) {
   return (
-    <div className='flex flex-row py-2 lg:pt-16'>
+    <div className='flex flex-row py-2 lg:pt-4'>
       <Icon />
       <div className='font-bold text-xs italic pl-2'>{title}</div>
     </div>
@@ -106,7 +106,7 @@ function StatusEntry({ name, value }) {
   )
 }
 
-function Description({desc}) {
+function Description({ desc }) {
   return (
     <span className='line-clamp-2 text-xs text-gray-500'>{desc}</span>
   )
@@ -119,8 +119,8 @@ function Description({desc}) {
 function Title({ server_ip }) {
   return (
     <div className='flex flex-row p-2 bg-gray-300 lg:bg-inherit lg:flex-col lg:pt-8'>
-      <div className='text-xl font-bold w-auto lg:self-center lg:text-3xl lg:pb-2'>Timelord Service</div>
-      <div className='text-xs text-right grow self-center'><span className='font-bold'>HOST</span>{' '}<span className='underline'>{server_ip}</span></div>
+      <div className='text-xl font-bold w-auto lg:self-center lg:text-3xl lg:pb-2'>BitcoinHD chain</div>
+      <div className='text-xs text-right grow self-center'><span className='font-bold'>Timelord service</span>{' '}<span className='underline'>{server_ip}</span></div>
     </div>
   )
 }
@@ -195,11 +195,15 @@ function StatusLastBlockInfo({ hash, height, address, reward, accumulate, filter
 
 function Status({ challenge, height, iters_per_sec, total_size, last_block_info, vdf_pack }) {
   return (
-    <div>
-      <StatusBase iters_per_sec={iters_per_sec} />
-      <StatusArriving height={height} challenge={challenge} total_size={total_size} vdf_pack={vdf_pack} />
-      <StatusLastBlockInfo {...last_block_info} />
-    </div>
+    <>
+      <div className='lg:w-[400px]'>
+        <StatusBase iters_per_sec={iters_per_sec} />
+        <StatusArriving height={height} challenge={challenge} total_size={total_size} vdf_pack={vdf_pack} />
+      </div>
+      <div className='lg:w-[400px]'>
+        <StatusLastBlockInfo {...last_block_info} />
+      </div>
+    </>
   )
 }
 
@@ -251,7 +255,7 @@ function SummaryPie({ hours, summary }) {
     <>
       <SectionTitle Icon={FaChartPie} title={'Blocks in ' + hours_str} />
       <Description desc={`The chart following shows the information of the blocks for the past ${hours_str}.`} />
-      <Pie className='lg:mt-8' data={data} />
+      <Pie className='lg:mt-8 lg:p-8 lg:bg-gray-200 lg:rounded-2xl' data={data} />
     </>
   )
 }
@@ -269,7 +273,7 @@ function SummaryStatus({ num_blocks, high_height, low_height, hours }) {
 
 function Summary({ num_blocks, high_height, low_height, hours, summary }) {
   return (
-    <div className='lg:w-[450px]'>
+    <div className='lg:w-[400px]'>
       <SummaryStatus num_blocks={num_blocks} hours={hours} low_height={low_height} high_height={high_height} />
       <SummaryPie summary={summary} hours={hours} />
     </div>
@@ -282,19 +286,26 @@ function Summary({ num_blocks, high_height, low_height, hours, summary }) {
 
 export default function Home() {
   const [status, queryStatus] = useTimelordStatus();
-  const [summary, querySummary] = useTimelordSummary(24);
+  const [summary24, querySummary24] = useTimelordSummary(24);
+  const [summary24_7, querySummary24_7] = useTimelordSummary(24 * 7);
   useEffect(() => {
     ChartJS.register(ArcElement, Tooltip, Legend);
     queryStatus();
-    querySummary();
+    querySummary24();
+    querySummary24_7();
   }, []);
   return (
     <main className='flex flex-col items-center'>
-      <div className='w-full bg-gray-100 lg:w-[1000px] lg:bg-white'>
+      <div className='w-full bg-gray-100 lg:w-[1000px] lg:bg-gray-100'>
         <Title {...status} />
-        <div className='p-3 lg:flex lg:flex-row lg:justify-between'>
-          <Status {...status} />
-          <Summary {...summary} />
+        <div className='p-3'>
+          <div className='lg:flex lg:flex-row lg:justify-between lg:p-8 lg:bg-gray-50'>
+            <Status {...status} />
+          </div>
+          <div className='lg:flex lg:flex-row lg:justify-between lg:p-8'>
+            <Summary {...summary24} />
+            <Summary {...summary24_7} />
+          </div>
         </div>
       </div>
     </main>
