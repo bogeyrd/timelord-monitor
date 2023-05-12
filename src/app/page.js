@@ -129,12 +129,13 @@ function Title({ server_ip }) {
  * Base status
  */
 
-function StatusBase({ iters_per_sec }) {
+function StatusBase({ iters_per_sec, num_connections }) {
   return (
     <>
       <SectionTitle Icon={FaLandmark} title='Base' />
       <StatusEntry name='Version' value={'beta 0.1.0'} />
       <StatusEntry name='VDF speed' value={formatNumberString(iters_per_sec) + ' ips'} />
+      <StatusEntry name='Connections' value={num_connections} />
     </>
   )
 }
@@ -193,11 +194,11 @@ function StatusLastBlockInfo({ hash, height, address, reward, accumulate, filter
   )
 }
 
-function Status({ challenge, height, iters_per_sec, total_size, last_block_info, vdf_pack }) {
+function Status({ challenge, height, iters_per_sec, total_size, num_connections, last_block_info, vdf_pack }) {
   return (
     <>
       <div className='lg:w-[400px]'>
-        <StatusBase iters_per_sec={iters_per_sec} />
+        <StatusBase iters_per_sec={iters_per_sec} num_connections={num_connections} />
         <StatusArriving height={height} challenge={challenge} total_size={total_size} vdf_pack={vdf_pack} />
       </div>
       <div className='lg:w-[400px]'>
