@@ -2,10 +2,10 @@
 
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { FaBitcoin, FaLandmark, FaChartPie, FaStream, FaRocket, FaClock } from 'react-icons/fa';
+import { FaBitcoin, FaLandmark, FaChartPie, FaStream, FaRocket, FaClock, FaHdd } from 'react-icons/fa';
 
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
-import { Pie } from 'react-chartjs-2';
+import { Chart as ChartJS } from 'chart.js/auto';
+import { Pie, Line } from 'react-chartjs-2';
 
 /**
  * Utilities
@@ -83,6 +83,16 @@ function useTimelordSummary(hours) {
     });
   };
   return [summary, query];
+}
+
+function useTimelordNetspace(hours) {
+  const [netspace, setNetspace] = useState();
+  const query = () => {
+    axios.get(getApiHost() + '/api/netspace?hours=' + hours + '&rn=' + Math.random()).then(function (res) {
+      setNetspace(res.data);
+    });
+  };
+  return [netspace, query];
 }
 
 /**
@@ -218,6 +228,12 @@ function Status({ challenge, height, iters_per_sec, total_size, num_connections,
  */
 
 function SummaryPie({ hours, summary }) {
+  if (typeof summary === 'undefined') {
+    return (
+      <div />
+    );
+  }
+
   const data = {
     labels: [],
     datasets: [
@@ -241,12 +257,6 @@ function SummaryPie({ hours, summary }) {
   const colorWithAlpha = (color, alpha) => {
     return `rgba(${color[0]}, ${color[1]}, ${color[2]}, ${alpha})`;
   };
-
-  if (typeof summary === 'undefined') {
-    return (
-      <div />
-    );
-  }
 
   for (let i = 0; i < summary.length; ++i) {
     const entry = summary[i];
@@ -277,6 +287,56 @@ function SummaryStatus({ num_blocks, high_height, low_height, hours }) {
   )
 }
 
+function SummaryNetspace({ netspace }) {
+  if (typeof netspace === 'undefined') {
+    return (
+      <div />
+    );
+  }
+  const options = {
+    responsive: true,
+    plugins: {
+      title: {
+        display: false,
+      },
+    },
+  };
+  let labels = [];
+  let data = {
+    labels,
+    datasets: [
+      {
+        label: 'Challenge difficulty',
+        data: [],
+        pointStyle: false,
+        borderWidth: 1,
+        borderColor: 'rgb(255, 99, 132)',
+        backgroundColor: 'rgba(255, 99, 132, 0.5)',
+      },
+      {
+        label: 'Block difficulty',
+        data: [],
+        pointStyle: false,
+        borderWidth: 1,
+        borderColor: 'rgb(200, 200, 200)',
+        backgroundColor: 'rgba(200, 200, 200, 0.5)',
+      },
+    ],
+  };
+  for (let i = 0; i < netspace.length; ++i) {
+    const entry = netspace[i];
+    labels.push(entry.height);
+    data.datasets[0].data.push(entry.challenge_difficulty / 1000000000);
+    data.datasets[1].data.push(entry.block_difficulty / 1000000000);
+  }
+  return (
+    <>
+      <SectionTitle Icon={FaHdd} title='Difficulty variation in 7 days (GB)' />
+      <Line options={options} data={data} />
+    </>
+  );
+}
+
 function Summary({ num_blocks, high_height, low_height, hours, summary }) {
   return (
     <div className='lg:w-[400px]'>
@@ -294,11 +354,12 @@ export default function Home() {
   const [status, queryStatus] = useTimelordStatus();
   const [summary24, querySummary24] = useTimelordSummary(24);
   const [summary24_7, querySummary24_7] = useTimelordSummary(24 * 7);
+  const [netspace, queryNetspace] = useTimelordNetspace(24 * 7);
   useEffect(() => {
-    ChartJS.register(ArcElement, Tooltip, Legend);
     queryStatus();
     querySummary24();
     querySummary24_7();
+    queryNetspace();
   }, []);
   return (
     <main className='flex flex-col items-center'>
@@ -307,6 +368,9 @@ export default function Home() {
         <div className='p-3'>
           <div className='lg:flex lg:flex-row lg:justify-between lg:p-8 lg:bg-gray-50'>
             <Status {...status} />
+          </div>
+          <div className='lg:p-8'>
+            <SummaryNetspace netspace={netspace} />
           </div>
           <div className='lg:flex lg:flex-row lg:justify-between lg:p-8'>
             <Summary {...summary24} />
