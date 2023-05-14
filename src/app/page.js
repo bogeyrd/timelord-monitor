@@ -43,6 +43,16 @@ function calcMod(a, b) {
   return [r1, r2];
 }
 
+function makeDurationByHours(hours) {
+  if (typeof hours != 'number') {
+    return '...';
+  }
+  if (hours > 24) {
+    return `${hours / 24} days`;
+  }
+  return `${hours} hours`;
+}
+
 function formatNumberString(n) {
   if (typeof n === 'number') {
     return n.toLocaleString();
@@ -275,8 +285,7 @@ function SummaryPie({ hours, summary }) {
     data.datasets[0].backgroundColor.push(colorWithAlpha(colors[i], '0.7'));
   }
 
-  const hours_str = hours ? (hours + ' hours') : '...';
-
+  const hours_str = makeDurationByHours(hours);
   return (
     <>
       <SectionTitle Icon={FaChartPie} title={'Blocks in ' + hours_str} />
@@ -287,9 +296,10 @@ function SummaryPie({ hours, summary }) {
 }
 
 function SummaryStatus({ num_blocks, high_height, low_height, hours }) {
+  const hours_str = makeDurationByHours(hours);
   return (
     <>
-      <SectionTitle Icon={FaStream} title={`Summary in ${hours} hours`} />
+      <SectionTitle Icon={FaStream} title={'Summary in ' + hours_str} />
       <StatusEntry name='Total blocks' value={formatNumberString(num_blocks)} />
       <StatusEntry name='Time per block' value={formatNumberString(hours * 60 / num_blocks) + ' min'} />
       <StatusEntry name='Block range' value={formatNumberString(low_height) + ' ... ' + formatNumberString(high_height)} />
