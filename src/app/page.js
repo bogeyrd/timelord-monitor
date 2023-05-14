@@ -32,6 +32,17 @@ function shortHashString(hash) {
   return replaceUndefined(hash);
 }
 
+function calcMod(a, b) {
+  if (typeof a !== 'number' || typeof b !== 'number') {
+    return [0, 0];
+  }
+  a = Math.floor(a);
+  b = Math.floor(b);
+  const r2 = a % b;
+  const r1 = (r2 === 0 ? Math.floor(a / b) + 1 : Math.floor(a / b));
+  return [r1, r2];
+}
+
 function formatNumberString(n) {
   if (typeof n === 'number') {
     return n.toLocaleString();
@@ -43,9 +54,8 @@ function formatSeconds(secs) {
   if (typeof secs === 'undefined' || secs === null) {
     secs = 0;
   }
-  const s = secs % 60;
-  const m = Math.floor(secs / 60) % 60;
-  const h = Math.floor(m / 60);
+  let [m1, s] = calcMod(secs, 60);
+  let [h, m] = calcMod(m1, 60);
   if (h > 0) {
     return `${h}:${m}:${s}`;
   } else {
