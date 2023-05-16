@@ -175,8 +175,8 @@ function StatusBase({ iters_per_sec, num_connections, status_string }) {
   )
 }
 
-function StatusArriving({ height, challenge, total_size, vdf_pack }) {
-  let requests = null;
+function StatusArriving({ height, challenge, total_size, vdf_pack, num_connections }) {
+  let requests = [];
   let timestamp = null;
   if (vdf_pack) {
     requests = vdf_pack.requests;
@@ -204,6 +204,7 @@ function StatusArriving({ height, challenge, total_size, vdf_pack }) {
       <StatusEntry name='Netspace' value={formatNumberString(total_size)} />
       <SectionTitle Icon={FaClock} title='Next block' />
       <StatusEntry name='Estimated time' value={formatSeconds(estimated_seconds)} />
+      <StatusEntry name='Number of answers' value={`${formatNumberString(requests.length)}/${formatNumberString(num_connections)}`} />
       <StatusEntry name='Previous block' value={formatLocalTime(timestamp)} />
       <StatusEntry name='Next block' value={formatLocalTime(timestamp ? timestamp + estimated_seconds : null)} />
     </>
@@ -234,7 +235,7 @@ function Status({ challenge, height, iters_per_sec, total_size, num_connections,
     <>
       <div className='lg:w-[400px]'>
         <StatusBase iters_per_sec={iters_per_sec} num_connections={num_connections} status_string={status_string} />
-        <StatusArriving height={height} challenge={challenge} total_size={total_size} vdf_pack={vdf_pack} />
+        <StatusArriving height={height} challenge={challenge} total_size={total_size} vdf_pack={vdf_pack} num_connections={num_connections} />
       </div>
       <div className='lg:w-[400px]'>
         <StatusLastBlockInfo {...last_block_info} />
@@ -371,7 +372,7 @@ function Summary({ num_blocks, high_height, low_height, hours, summary }) {
  */
 
 export default function Home() {
-  const [status, queryStatus] = useTimelordStatus();
+  const [baseStatus, queryStatus] = useTimelordStatus();
   const [summary24, querySummary24] = useTimelordSummary(24);
   const [summary24_7, querySummary24_7] = useTimelordSummary(24 * 7);
   const [netspace, queryNetspace] = useTimelordNetspace(24 * 7);
@@ -384,10 +385,10 @@ export default function Home() {
   return (
     <main className='flex flex-col items-center'>
       <div className='w-full bg-gray-100 lg:w-[1000px] lg:bg-gray-100'>
-        <Title {...status} />
+        <Title {...baseStatus} />
         <div className='p-3'>
           <div className='lg:flex lg:flex-row lg:justify-between lg:p-8 lg:bg-gray-50'>
-            <Status {...status} />
+            <Status {...baseStatus} />
           </div>
           <div className='lg:p-8'>
             <SummaryNetspace netspace={netspace} />
