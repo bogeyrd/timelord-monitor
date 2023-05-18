@@ -2,7 +2,7 @@
 const nextConfig = {
   output: 'standalone',
   env: {
-    apiUrl: 'https://testnet3-timelord-api.intgrow.com',
+    apiUrl: 'https://timelord.bhd.one',
   }
 }
 
