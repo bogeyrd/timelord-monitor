@@ -131,31 +131,41 @@ function useRank() {
 
 function SectionTitle({ Icon, title }) {
   return (
-    <div className='flex flex-row py-2 lg:pt-4'>
+    <div className='flex flex-row py-2 lg:pt-4 items-center'>
       <Icon />
-      <div className='font-bold text-xs italic pl-2'>{title}</div>
+      <div className='font-bold italic pl-2'>{title}</div>
     </div>
   );
 }
 
-function StatusEntry({ name, value, error, hi }) {
-  let clsName = 'p-1 text-sm flex flex-row';
+function StatusEntry({ name, value, error, hi, strong_value }) {
+  let clsName = 'p-1 m-1 flex flex-row rounded';
   if (error) {
     clsName = clsName + ' text-red-700';
   }
-  if (hi) {
-    clsName = clsName + ' bg-slate-200';
+  if (typeof hi !== 'undefined') {
+    if (hi) {
+      clsName = clsName + ' bg-gray-200';
+    } else {
+      clsName = clsName + ' bg-gray-100';
+    }
+  }
+  let clsNameVal = 'font-mono text-right grow';
+  let clsNameName = '';
+  if (strong_value) {
+    clsNameVal = clsNameVal + ' italic font-bold';
+    clsNameName = 'text-xs lg:text-sm'
   }
   return (
     <div className={clsName}>
-      <div>{name}</div><div className='font-mono text-right grow'>{replaceUndefined(value)}</div>
+      <div className={clsNameName}>{name}</div><div className={clsNameVal}>{replaceUndefined(value)}</div>
     </div>
   )
 }
 
 function Description({ desc }) {
   return (
-    <span className='line-clamp-2 text-xs text-gray-500'>{desc}</span>
+    <span className='px-4 line-clamp-2 text-xs text-gray-500'>{desc}</span>
   )
 }
 
@@ -261,7 +271,7 @@ function Status({ challenge, height, iters_per_sec, total_size, num_connections,
  * Summary
  */
 
-function SummaryPie({ hours, summary }) {
+function SummaryPie({ hours, summary, num_blocks }) {
   if (typeof summary === 'undefined') {
     return (
       <div />
@@ -285,19 +295,31 @@ function SummaryPie({ hours, summary }) {
     [70, 250, 70],
     [70, 220, 70],
     [70, 200, 70],
-    [250, 70, 70],
+    [250, 0, 0],
+    [100, 0, 0],
   ];
 
   const colorWithAlpha = (color, alpha) => {
     return `rgba(${color[0]}, ${color[1]}, ${color[2]}, ${alpha})`;
   };
 
-  for (let i = 0; i < summary.length; ++i) {
-    const entry = summary[i];
-    data.labels.push(`<${entry.min}m`);
+  const labels = ['1m-3m', '3m-10m', '10m-30m', '30m-60m', '>60m'];
+  let count_blocks = 0;
+  for (let i = 0; i < summary.length + 1; ++i) {
+    let entry;
+    if (i === summary.length) {
+      entry = {
+        count: num_blocks - count_blocks,
+        min: 0
+      };
+    } else {
+      entry = summary[i];
+      count_blocks += entry.count;
+    }
+    data.labels.push(`${labels[i]}=${entry.count}`);
     data.datasets[0].data.push(entry.count);
     data.datasets[0].backgroundColor.push(colorWithAlpha(colors[i], '0.7'));
-  }
+}
 
   const hours_str = makeDurationByHours(hours);
   return (
@@ -375,7 +397,7 @@ function Summary({ num_blocks, high_height, low_height, hours, summary }) {
   return (
     <div className='lg:w-[430px]'>
       <SummaryStatus num_blocks={num_blocks} hours={hours} low_height={low_height} high_height={high_height} />
-      <SummaryPie summary={summary} hours={hours} />
+      <SummaryPie summary={summary} hours={hours} num_blocks={num_blocks} />
     </div>
   );
 }
@@ -396,7 +418,7 @@ function Rank({ rank }) {
       <SectionTitle Icon={FaHackerrank} title='Rank' />
       {
         entries.map((entry, i) => {
-          return <StatusEntry name={entry.address} value={formatNumberString(entry.count)} hi={i % 2 === 0} />
+          return <StatusEntry name={entry.address} strong_value value={formatNumberString(entry.count)} hi={i % 2 === 0} />
         })
       }
       <SectionTitle Icon={FaHackerrank} title='Rank summary' />
@@ -425,14 +447,14 @@ export default function Home() {
     queryRank();
   }, []);
   return (
-    <main className='flex flex-col items-center'>
+    <main className='flex flex-col items-center text-sm'>
       <div className='w-full bg-gray-100 lg:w-[1000px] lg:bg-gray-100'>
         <Title {...baseStatus} />
         <div className='p-3'>
-          <div className='lg:flex lg:flex-row lg:justify-between lg:p-8 lg:bg-gray-50'>
+          <div className='lg:flex lg:flex-row lg:justify-between lg:p-8 lg:bg-gray-50 lg:rounded-2xl'>
             <Status {...baseStatus} />
           </div>
-          <div className='lg:p-8 lg:mt-8 lg:bg-gray-50'>
+          <div className='lg:p-8 lg:mt-8 lg:bg-gray-50 lg:rounded-2xl'>
             <Rank rank={rank} />
           </div>
           <div className='lg:p-8'>
