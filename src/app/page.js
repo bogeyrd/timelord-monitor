@@ -2,7 +2,7 @@
 
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { FaBitcoin, FaLandmark, FaChartPie, FaStream, FaRocket, FaClock, FaHdd } from 'react-icons/fa';
+import { FaBitcoin, FaLandmark, FaChartPie, FaStream, FaRocket, FaClock, FaHdd, FaHackerrank } from 'react-icons/fa';
 
 import { Chart as ChartJS } from 'chart.js/auto';
 import { Pie, Line } from 'react-chartjs-2';
@@ -115,6 +115,16 @@ function useTimelordNetspace(hours) {
   return [netspace, query];
 }
 
+function useRank() {
+  const [rank, setRank] = useState();
+  const query = () => {
+    axios.get(getApiHost() + '/api/rank?rn=' + Math.random()).then(function (res) {
+      setRank(res.data);
+    });
+  };
+  return [rank, query];
+}
+
 /**
  * Base components
  */
@@ -128,10 +138,13 @@ function SectionTitle({ Icon, title }) {
   );
 }
 
-function StatusEntry({ name, value, error }) {
+function StatusEntry({ name, value, error, hi }) {
   let clsName = 'p-1 text-sm flex flex-row';
   if (error) {
     clsName = clsName + ' text-red-700';
+  }
+  if (hi) {
+    clsName = clsName + ' bg-slate-200';
   }
   return (
     <div className={clsName}>
@@ -291,7 +304,7 @@ function SummaryPie({ hours, summary }) {
     <>
       <SectionTitle Icon={FaChartPie} title={'Blocks in ' + hours_str} />
       <Description desc={`The chart following shows the information of the blocks for the past ${hours_str}.`} />
-      <Pie className='lg:mt-8 lg:p-8 lg:bg-gray-200 lg:rounded-2xl' data={data} />
+      <Pie className='lg:mt-8 lg:p-8 lg:bg-slate-200 lg:rounded-2xl' data={data} />
     </>
   )
 }
@@ -364,7 +377,34 @@ function Summary({ num_blocks, high_height, low_height, hours, summary }) {
       <SummaryStatus num_blocks={num_blocks} hours={hours} low_height={low_height} high_height={high_height} />
       <SummaryPie summary={summary} hours={hours} />
     </div>
-  )
+  );
+}
+
+function Rank({ rank }) {
+  let begin_height;
+  let end_height;
+  let count;
+  let entries = [];
+  if (rank) {
+    begin_height = rank.begin_height;
+    end_height = rank.end_height;
+    count = rank.count;
+    entries = rank.entries;
+  }
+  return (
+    <>
+      <SectionTitle Icon={FaHackerrank} title='Rank' />
+      {
+        entries.map((entry, i) => {
+          return <StatusEntry name={entry.address} value={formatNumberString(entry.count)} hi={i % 2 === 0} />
+        })
+      }
+      <SectionTitle Icon={FaHackerrank} title='Rank summary' />
+      <StatusEntry name='Begin height' value={formatNumberString(begin_height)} />
+      <StatusEntry name='End height' value={formatNumberString(end_height)} />
+      <StatusEntry name='Count' value={formatNumberString(count)} />
+    </>
+  );
 }
 
 /**
@@ -376,11 +416,13 @@ export default function Home() {
   const [summary24, querySummary24] = useTimelordSummary(24);
   const [summary24_7, querySummary24_7] = useTimelordSummary(24 * 7);
   const [netspace, queryNetspace] = useTimelordNetspace(24 * 7);
+  const [rank, queryRank] = useRank();
   useEffect(() => {
     queryStatus();
     querySummary24();
     querySummary24_7();
     queryNetspace();
+    queryRank();
   }, []);
   return (
     <main className='flex flex-col items-center'>
@@ -389,6 +431,9 @@ export default function Home() {
         <div className='p-3'>
           <div className='lg:flex lg:flex-row lg:justify-between lg:p-8 lg:bg-gray-50'>
             <Status {...baseStatus} />
+          </div>
+          <div className='lg:p-8 lg:mt-8 lg:bg-gray-50'>
+            <Rank rank={rank} />
           </div>
           <div className='lg:p-8'>
             <SummaryNetspace netspace={netspace} />
