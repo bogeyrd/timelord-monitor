@@ -246,11 +246,11 @@ function StatusLastBlockInfo({ hash, height, address, reward, accumulate, filter
 function Status({ challenge, height, iters_per_sec, total_size, num_connections, status_string, last_block_info, vdf_pack }) {
   return (
     <>
-      <div className='lg:w-[400px]'>
+      <div className='lg:w-[430px]'>
         <StatusBase iters_per_sec={iters_per_sec} num_connections={num_connections} status_string={status_string} />
         <StatusArriving height={height} challenge={challenge} total_size={total_size} vdf_pack={vdf_pack} num_connections={num_connections} />
       </div>
-      <div className='lg:w-[400px]'>
+      <div className='lg:w-[430px]'>
         <StatusLastBlockInfo {...last_block_info} />
       </div>
     </>
@@ -303,8 +303,8 @@ function SummaryPie({ hours, summary }) {
   return (
     <>
       <SectionTitle Icon={FaChartPie} title={'Blocks in ' + hours_str} />
-      <Description desc={`The chart following shows the information of the blocks for the past ${hours_str}.`} />
-      <Pie className='lg:mt-8 lg:p-8 lg:bg-slate-200 lg:rounded-2xl' data={data} />
+      <Description desc={`The chart shows the block duration statistics for the past ${hours_str}.`} />
+      <Pie className='lg:mt-8 lg:p-8 lg:bg-gray-50 lg:rounded-2xl' data={data} />
     </>
   )
 }
@@ -373,7 +373,7 @@ function SummaryNetspace({ netspace }) {
 
 function Summary({ num_blocks, high_height, low_height, hours, summary }) {
   return (
-    <div className='lg:w-[400px]'>
+    <div className='lg:w-[430px]'>
       <SummaryStatus num_blocks={num_blocks} hours={hours} low_height={low_height} high_height={high_height} />
       <SummaryPie summary={summary} hours={hours} />
     </div>
