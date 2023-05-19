@@ -129,32 +129,32 @@ function useRank() {
  * Base components
  */
 
-function SectionTitle({ Icon, title }) {
+function SectionTitle({ Icon, title, desc }) {
   return (
     <div className='flex flex-row py-2 lg:pt-4 items-center'>
       <Icon />
       <div className='font-bold italic pl-2'>{title}</div>
+      <div className='text-xs pl-4'>{desc}</div>
     </div>
   );
 }
 
 function StatusEntry({ name, value, error, hi, strong_value }) {
-  let clsName = 'p-1 m-1 flex flex-row rounded';
+  let clsName = 'p-1 flex flex-row';
   if (error) {
     clsName = clsName + ' text-red-700';
   }
   if (typeof hi !== 'undefined') {
     if (hi) {
-      clsName = clsName + ' bg-gray-200';
+      clsName = clsName + ' bg-gray-50';
     } else {
-      clsName = clsName + ' bg-gray-100';
+      clsName = clsName + ' bg-gray-200';
     }
   }
   let clsNameVal = 'font-mono text-right grow';
-  let clsNameName = '';
+  let clsNameName = 'italic';
   if (strong_value) {
     clsNameVal = clsNameVal + ' italic font-bold';
-    clsNameName = 'text-xs lg:text-sm'
   }
   return (
     <div className={clsName}>
@@ -415,16 +415,17 @@ function Rank({ rank }) {
   }
   return (
     <>
-      <SectionTitle Icon={FaHackerrank} title='Rank' />
+      <SectionTitle Icon={FaHackerrank} title='Rank' desc={'Since height ' + formatNumberString(begin_height)} />
       {
         entries.map((entry, i) => {
-          return <StatusEntry name={entry.address} strong_value value={formatNumberString(entry.count)} hi={i % 2 === 0} />
+          return <>
+            <StatusEntry name='Address' strong_value value={entry.address} hi={i % 2 === 0} />
+            <StatusEntry name='Produced blocks' value={formatNumberString(entry.count)} hi={i % 2 === 0} />
+            <StatusEntry name='Avg. Block Difficulty' value={formatNumberString(entry.average_difficulty)} hi={i % 2 === 0} />
+            <StatusEntry name='Rewards' value={formatNumberString(entry.total_reward) + ' BHD'} hi={i % 2 === 0} />
+          </>
         })
       }
-      <SectionTitle Icon={FaHackerrank} title='Rank summary' />
-      <StatusEntry name='Begin height' value={formatNumberString(begin_height)} />
-      <StatusEntry name='End height' value={formatNumberString(end_height)} />
-      <StatusEntry name='Count' value={formatNumberString(count)} />
     </>
   );
 }
@@ -454,15 +455,15 @@ export default function Home() {
           <div className='lg:flex lg:flex-row lg:justify-between lg:p-8 lg:bg-gray-50 lg:rounded-2xl'>
             <Status {...baseStatus} />
           </div>
-          <div className='lg:p-8 lg:mt-8 lg:bg-gray-50 lg:rounded-2xl'>
-            <Rank rank={rank} />
-          </div>
           <div className='lg:p-8'>
             <SummaryNetspace netspace={netspace} />
           </div>
           <div className='lg:flex lg:flex-row lg:justify-between lg:p-8'>
             <Summary {...summary24} />
             <Summary {...summary24_7} />
+          </div>
+          <div className='mt-4 lg:p-8'>
+            <Rank rank={rank} />
           </div>
         </div>
       </div>
