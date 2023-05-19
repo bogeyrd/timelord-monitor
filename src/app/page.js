@@ -38,8 +38,11 @@ function calcMod(a, b) {
   }
   a = Math.floor(a);
   b = Math.floor(b);
+  if (b === 0) {
+    return [0, 0];
+  }
   const r2 = a % b;
-  const r1 = (r2 === 0 ? Math.floor(a / b) + 1 : Math.floor(a / b));
+  const r1 = Math.floor(a / b);
   return [r1, r2];
 }
 
