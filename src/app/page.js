@@ -91,7 +91,7 @@ function formatLocalTime(timestamp) {
 function useTimelordStatus() {
   const [status, setStatus] = useState();
   const query = () => {
-    axios.get(getApiHost() + '/api/status?rn=' + Math.random()).then(function(res) {
+    axios.get(getApiHost() + '/api/status?rn=' + Math.random()).then(function (res) {
       setStatus(res.data);
     });
   };
@@ -101,7 +101,7 @@ function useTimelordStatus() {
 function useTimelordSummary(hours) {
   const [summary, setSummary] = useState();
   const query = () => {
-    axios.get(getApiHost() + '/api/summary?hours=' + hours + '&rn=' + Math.random()).then(function(res) {
+    axios.get(getApiHost() + '/api/summary?hours=' + hours + '&rn=' + Math.random()).then(function (res) {
       setSummary(res.data);
     });
   };
@@ -111,7 +111,7 @@ function useTimelordSummary(hours) {
 function useTimelordNetspace(hours) {
   const [netspace, setNetspace] = useState();
   const query = () => {
-    axios.get(getApiHost() + '/api/netspace?hours=' + hours + '&rn=' + Math.random()).then(function(res) {
+    axios.get(getApiHost() + '/api/netspace?hours=' + hours + '&rn=' + Math.random()).then(function (res) {
       setNetspace(res.data);
     });
   };
@@ -127,7 +127,7 @@ function useRank(hours) {
   }
   const [rank, setRank] = useState();
   const query = () => {
-    axios.get(getApiHost() + postUrl).then(function(res) {
+    axios.get(getApiHost() + postUrl).then(function (res) {
       setRank(res.data);
     });
   };
