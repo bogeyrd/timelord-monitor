@@ -118,10 +118,16 @@ function useTimelordNetspace(hours) {
   return [netspace, query];
 }
 
-function useRank() {
+function useRank(hours) {
+  let postUrl;
+  if (typeof hours === 'undefined') {
+    postUrl = '/api/rank?rn=' + Math.random();
+  } else {
+    postUrl = '/api/rank?hours=' + hours + '&rn=' + Math.random();
+  }
   const [rank, setRank] = useState();
   const query = () => {
-    axios.get(getApiHost() + '/api/rank?rn=' + Math.random()).then(function(res) {
+    axios.get(getApiHost() + postUrl).then(function(res) {
       setRank(res.data);
     });
   };
@@ -149,7 +155,7 @@ function StatusEntry({ name, value, error, hi, strong_value }) {
   }
   if (typeof hi !== 'undefined') {
     if (hi) {
-      clsName = clsName + ' bg-gray-50';
+      clsName = clsName + ' bg-gray-50 lg:bg-gray-100';
     } else {
       clsName = clsName + ' bg-gray-200';
     }
@@ -329,7 +335,7 @@ function SummaryPie({ hours, summary, num_blocks }) {
     <>
       <SectionTitle Icon={FaChartPie} title={'Blocks in ' + hours_str} />
       <Description desc={`The chart shows the block duration statistics for the past ${hours_str}.`} />
-      <Pie className='lg:mt-8 lg:p-8 lg:bg-gray-50 lg:rounded-2xl' data={data} />
+      <Pie className='lg:p-4' data={data} />
     </>
   )
 }
@@ -405,7 +411,7 @@ function Summary({ num_blocks, high_height, low_height, hours, summary }) {
   );
 }
 
-function Rank({ rank }) {
+function Rank({ rank, title }) {
   let begin_height;
   let entries = [];
   if (rank) {
@@ -414,15 +420,15 @@ function Rank({ rank }) {
   }
   return (
     <>
-      <SectionTitle Icon={FaHackerrank} title='Rank' desc={'Since height ' + formatNumberString(begin_height)} />
+      <SectionTitle Icon={FaHackerrank} title={title} desc={'Since height ' + formatNumberString(begin_height)} />
       {
         entries.map((entry, i) => {
-          return <>
+          return <div className='mb-2'>
             <StatusEntry name='Address' strong_value value={entry.address} hi={i % 2 === 0} />
             <StatusEntry name='Produced blocks' value={formatNumberString(entry.count)} hi={i % 2 === 0} />
             <StatusEntry name='Avg. Block Difficulty' value={formatNumberString(entry.average_difficulty)} hi={i % 2 === 0} />
             <StatusEntry name='Rewards' value={formatNumberString(entry.total_reward) + ' BHD'} hi={i % 2 === 0} />
-          </>
+          </div>
         })
       }
     </>
@@ -439,12 +445,14 @@ export default function Home() {
   const [summary24_7, querySummary24_7] = useTimelordSummary(24 * 7);
   const [netspace, queryNetspace] = useTimelordNetspace(24 * 7);
   const [rank, queryRank] = useRank();
+  const [rank24, queryRank24] = useRank(24);
   useEffect(() => {
     queryStatus();
     querySummary24();
     querySummary24_7();
     queryNetspace();
     queryRank();
+    queryRank24();
   }, []);
   return (
     <main className='flex flex-col items-center text-sm'>
@@ -461,8 +469,13 @@ export default function Home() {
             <Summary {...summary24} />
             <Summary {...summary24_7} />
           </div>
-          <div className='mt-4 lg:p-8'>
-            <Rank rank={rank} />
+          <div className='lg:bg-gray-50 lg:rounded-2xl'>
+            <div className='mt-4 lg:p-8'>
+              <Rank title='Rank' rank={rank} />
+            </div>
+            <div className='my-4 lg:p-8'>
+              <Rank title='Rank in 24 hours' rank={rank24} />
+            </div>
           </div>
         </div>
       </div>
