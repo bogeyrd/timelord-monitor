@@ -407,13 +407,9 @@ function Summary({ num_blocks, high_height, low_height, hours, summary }) {
 
 function Rank({ rank }) {
   let begin_height;
-  let end_height;
-  let count;
   let entries = [];
   if (rank) {
     begin_height = rank.begin_height;
-    end_height = rank.end_height;
-    count = rank.count;
     entries = rank.entries;
   }
   return (
