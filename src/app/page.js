@@ -431,11 +431,15 @@ function SummaryNetspace({ netspace }) {
     return (
         <>
             <SectionTitle Icon={FaHdd} title="Difficulty variation in 7 days" />
-            <div className="mb-4 lg:mb-8">
-                <StatusEntry name="Maximum netspace" value={formatNumberString(max_netspace)} />
-                <StatusEntry name="Minimum netspace" value={formatNumberString(min_netspace)} />
-                <StatusEntry name="Maximum challenge diff." value={formatNumberString(max_ch_diff)} />
-                <StatusEntry name="Minimum challenge diff." value={formatNumberString(min_ch_diff)} />
+            <div className="mb-4 lg:mb-8 lg:flex lg:flex-row lg:justify-between">
+                <div className="lg:w-[430px]">
+                    <StatusEntry name="Maximum netspace" value={formatNumberString(max_netspace)} />
+                    <StatusEntry name="Minimum netspace" value={formatNumberString(min_netspace)} />
+                </div>
+                <div className="lg:w-[430px]">
+                    <StatusEntry name="Maximum challenge diff." value={formatNumberString(max_ch_diff)} />
+                    <StatusEntry name="Minimum challenge diff." value={formatNumberString(min_ch_diff)} />
+                </div>
             </div>
             <Line options={options} data={data} />
         </>
