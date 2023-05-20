@@ -208,14 +208,14 @@ function StatusBase({ iters_per_sec, num_connections, status_string }) {
     );
 }
 
-function StatusNetspace({max_size, min_size}) {
+function StatusNetspace({ max_size, min_size }) {
     return (
         <>
             <SectionTitle Icon={FaHdd} title="Netspace" />
             <StatusEntry name="Maximum netspace" value={formatNumberString(max_size)} />
             <StatusEntry name="Minimum netspace" value={formatNumberString(min_size)} />
         </>
-    )
+    );
 }
 
 function StatusArriving({ height, challenge, total_size, vdf_pack, num_connections, difficulty }) {
