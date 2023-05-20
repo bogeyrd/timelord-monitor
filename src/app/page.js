@@ -204,6 +204,7 @@ function StatusBase({ iters_per_sec, num_connections, status_string, max_size, m
             <StatusEntry name="VDF speed" value={formatNumberString(iters_per_sec) + ' ips'} />
             <StatusEntry name="Connections" value={num_connections} />
             <StatusEntry name="Status" value={status_string} error={status_string !== 'good'} />
+            <SectionTitle Icon={FaHdd} title="Netspace" />
             <StatusEntry name="Maximum netspace" value={formatNumberString(max_size)} />
             <StatusEntry name="Minimum netspace" value={formatNumberString(min_size)} />
         </>
