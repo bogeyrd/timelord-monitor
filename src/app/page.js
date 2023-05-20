@@ -4,7 +4,7 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { FaBitcoin, FaLandmark, FaChartPie, FaStream, FaRocket, FaClock, FaHdd, FaHackerrank } from 'react-icons/fa';
 
-import { Chart as ChartJS } from 'chart.js/auto';
+import 'chart.js/auto';
 import { Pie, Line } from 'react-chartjs-2';
 
 /**
@@ -91,7 +91,7 @@ function formatLocalTime(timestamp) {
 function useTimelordStatus() {
   const [status, setStatus] = useState();
   const query = () => {
-    axios.get(getApiHost() + '/api/status?rn=' + Math.random()).then(function (res) {
+    axios.get(getApiHost() + '/api/status?rn=' + Math.random()).then(function(res) {
       setStatus(res.data);
     });
   };
@@ -101,7 +101,7 @@ function useTimelordStatus() {
 function useTimelordSummary(hours) {
   const [summary, setSummary] = useState();
   const query = () => {
-    axios.get(getApiHost() + '/api/summary?hours=' + hours + '&rn=' + Math.random()).then(function (res) {
+    axios.get(getApiHost() + '/api/summary?hours=' + hours + '&rn=' + Math.random()).then(function(res) {
       setSummary(res.data);
     });
   };
@@ -111,7 +111,7 @@ function useTimelordSummary(hours) {
 function useTimelordNetspace(hours) {
   const [netspace, setNetspace] = useState();
   const query = () => {
-    axios.get(getApiHost() + '/api/netspace?hours=' + hours + '&rn=' + Math.random()).then(function (res) {
+    axios.get(getApiHost() + '/api/netspace?hours=' + hours + '&rn=' + Math.random()).then(function(res) {
       setNetspace(res.data);
     });
   };
@@ -121,7 +121,7 @@ function useTimelordNetspace(hours) {
 function useRank() {
   const [rank, setRank] = useState();
   const query = () => {
-    axios.get(getApiHost() + '/api/rank?rn=' + Math.random()).then(function (res) {
+    axios.get(getApiHost() + '/api/rank?rn=' + Math.random()).then(function(res) {
       setRank(res.data);
     });
   };
@@ -322,7 +322,7 @@ function SummaryPie({ hours, summary, num_blocks }) {
     data.labels.push(`${labels[i]}=${entry.count}`);
     data.datasets[0].data.push(entry.count);
     data.datasets[0].backgroundColor.push(colorWithAlpha(colors[i], '0.7'));
-}
+  }
 
   const hours_str = makeDurationByHours(hours);
   return (
