@@ -376,7 +376,7 @@ function SummaryNetspace({ netspace }) {
         pointStyle: false,
         borderWidth: 1,
         borderColor: 'rgb(255, 99, 132)',
-        backgroundColor: 'rgba(255, 99, 132, 0.5)',
+        backgroundColor: 'rgba(200, 200, 200, 0.5)',
       },
       {
         label: 'Block difficulty',
@@ -386,6 +386,14 @@ function SummaryNetspace({ netspace }) {
         borderColor: 'rgb(200, 200, 200)',
         backgroundColor: 'rgba(200, 200, 200, 0.5)',
       },
+      {
+        label: 'Netspace',
+        data: [],
+        pointStyle: true,
+        borderWidth: 1,
+        borderColor: 'rgb(100, 100, 200)',
+        backgroundColor: 'rgba(200, 200, 200, 0.5)',
+      },
     ],
   };
   for (let i = 0; i < netspace.length; ++i) {
@@ -393,6 +401,7 @@ function SummaryNetspace({ netspace }) {
     labels.push(entry.height);
     data.datasets[0].data.push(entry.challenge_difficulty / 1000000000);
     data.datasets[1].data.push(entry.block_difficulty / 1000000000);
+    data.datasets[2].data.push(entry.netspace / 1000000000);
   }
   return (
     <>
