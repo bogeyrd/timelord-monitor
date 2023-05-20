@@ -149,7 +149,7 @@ function SectionTitle({ Icon, title, desc }) {
 }
 
 function StatusEntry({ name, value, error, hi, strong_value }) {
-  let clsName = 'p-1 flex flex-row';
+  let clsName = 'p-[2px] flex flex-row';
   if (error) {
     clsName = clsName + ' text-red-700';
   }
@@ -195,7 +195,7 @@ function Title({ server_ip }) {
  * Base status
  */
 
-function StatusBase({ iters_per_sec, num_connections, status_string }) {
+function StatusBase({ iters_per_sec, num_connections, status_string, max_size, min_size }) {
   return (
     <>
       <SectionTitle Icon={FaLandmark} title='Base' />
@@ -203,6 +203,8 @@ function StatusBase({ iters_per_sec, num_connections, status_string }) {
       <StatusEntry name='VDF speed' value={formatNumberString(iters_per_sec) + ' ips'} />
       <StatusEntry name='Connections' value={num_connections} />
       <StatusEntry name='Status' value={status_string} error={status_string !== 'good'} />
+      <StatusEntry name='Maximum netspace' value={formatNumberString(max_size)} />
+      <StatusEntry name='Minimum netspace' value={formatNumberString(min_size)} />
     </>
   )
 }
@@ -262,11 +264,11 @@ function StatusLastBlockInfo({ hash, height, address, reward, accumulate, filter
   )
 }
 
-function Status({ challenge, height, iters_per_sec, total_size, num_connections, status_string, last_block_info, vdf_pack }) {
+function Status({ challenge, height, iters_per_sec, total_size, max_size, min_size, num_connections, status_string, last_block_info, vdf_pack }) {
   return (
     <>
       <div className='lg:w-[430px]'>
-        <StatusBase iters_per_sec={iters_per_sec} num_connections={num_connections} status_string={status_string} />
+        <StatusBase iters_per_sec={iters_per_sec} num_connections={num_connections} status_string={status_string} max_size={max_size} min_size={min_size} />
         <StatusArriving height={height} challenge={challenge} total_size={total_size} vdf_pack={vdf_pack} num_connections={num_connections} />
       </div>
       <div className='lg:w-[430px]'>
@@ -371,7 +373,7 @@ function SummaryNetspace({ netspace }) {
     labels,
     datasets: [
       {
-        label: 'Challenge difficulty',
+        label: 'Challenge diff.',
         data: [],
         pointStyle: false,
         borderWidth: 1,
@@ -379,33 +381,55 @@ function SummaryNetspace({ netspace }) {
         backgroundColor: 'rgba(200, 200, 200, 0.5)',
       },
       {
-        label: 'Block difficulty',
+        label: 'Netspace',
+        data: [],
+        pointStyle: false,
+        borderWidth: 1,
+        borderColor: 'rgb(100, 100, 200)',
+        backgroundColor: 'rgba(200, 200, 200, 0.5)',
+      },
+      {
+        label: 'Block diff.',
         data: [],
         pointStyle: false,
         borderWidth: 1,
         borderColor: 'rgb(200, 200, 200)',
         backgroundColor: 'rgba(200, 200, 200, 0.5)',
       },
-      {
-        label: 'Netspace',
-        data: [],
-        pointStyle: true,
-        borderWidth: 1,
-        borderColor: 'rgb(100, 100, 200)',
-        backgroundColor: 'rgba(200, 200, 200, 0.5)',
-      },
     ],
   };
-  for (let i = 0; i < netspace.length; ++i) {
+  let min_netspace = 0;
+  let max_netspace = 0;
+  let min_ch_diff = 0;
+  let max_ch_diff = 0;
+  for (let i = 0; i < netspace.length - 1; ++i) {
     const entry = netspace[i];
     labels.push(entry.height);
     data.datasets[0].data.push(entry.challenge_difficulty / 1000000000);
-    data.datasets[1].data.push(entry.block_difficulty / 1000000000);
-    data.datasets[2].data.push(entry.netspace / 1000000000);
+    data.datasets[1].data.push(entry.netspace / 1000000000000);
+    data.datasets[2].data.push(entry.block_difficulty / 1000000000);
+    if (min_netspace === 0 || min_netspace > entry.netspace) {
+      min_netspace = entry.netspace;
+    }
+    if (max_netspace < entry.netspace) {
+      max_netspace = entry.netspace;
+    }
+    if (min_ch_diff === 0 || min_ch_diff > entry.challenge_difficulty) {
+      min_ch_diff = entry.challenge_difficulty;
+    }
+    if (max_ch_diff < entry.challenge_difficulty) {
+      max_ch_diff = entry.challenge_difficulty;
+    }
   }
   return (
     <>
       <SectionTitle Icon={FaHdd} title='Difficulty variation in 7 days (GB)' />
+      <div className='mb-4 lg:mb-8'>
+        <StatusEntry name='Maximum netspace' value={formatNumberString(max_netspace)} />
+        <StatusEntry name='Minimum netspace' value={formatNumberString(min_netspace)} />
+        <StatusEntry name='Maximum challenge diff.' value={formatNumberString(max_ch_diff)} />
+        <StatusEntry name='Minimum challenge diff.' value={formatNumberString(min_ch_diff)} />
+      </div>
       <Line options={options} data={data} />
     </>
   );
