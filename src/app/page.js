@@ -196,7 +196,7 @@ function Title({ server_ip }) {
  * Base status
  */
 
-function StatusBase({ iters_per_sec, num_connections, status_string, max_size, min_size }) {
+function StatusBase({ iters_per_sec, num_connections, status_string }) {
     return (
         <>
             <SectionTitle Icon={FaLandmark} title="Base" />
@@ -204,14 +204,21 @@ function StatusBase({ iters_per_sec, num_connections, status_string, max_size, m
             <StatusEntry name="VDF speed" value={formatNumberString(iters_per_sec) + ' ips'} />
             <StatusEntry name="Connections" value={num_connections} />
             <StatusEntry name="Status" value={status_string} error={status_string !== 'good'} />
-            <SectionTitle Icon={FaHdd} title="Netspace" />
-            <StatusEntry name="Maximum netspace" value={formatNumberString(max_size)} />
-            <StatusEntry name="Minimum netspace" value={formatNumberString(min_size)} />
         </>
     );
 }
 
-function StatusArriving({ height, challenge, total_size, vdf_pack, num_connections }) {
+function StatusNetspace({max_size, min_size}) {
+    return (
+        <>
+            <SectionTitle Icon={FaHdd} title="Netspace" />
+            <StatusEntry name="Maximum netspace" value={formatNumberString(max_size)} />
+            <StatusEntry name="Minimum netspace" value={formatNumberString(min_size)} />
+        </>
+    )
+}
+
+function StatusArriving({ height, challenge, total_size, vdf_pack, num_connections, difficulty }) {
     let requests = [];
     let timestamp = null;
     if (vdf_pack) {
@@ -237,6 +244,7 @@ function StatusArriving({ height, challenge, total_size, vdf_pack, num_connectio
             <SectionTitle Icon={FaRocket} title="Arriving" />
             <StatusEntry name="Incoming height" value={formatNumberString(height)} />
             <StatusEntry name="Challenge" value={shortHashString(challenge)} />
+            <StatusEntry name="Challenge difficulty" value={formatNumberString(difficulty)} />
             <StatusEntry name="Netspace" value={formatNumberString(total_size)} />
             <SectionTitle Icon={FaClock} title="Next block" />
             <StatusEntry name="Estimated time" value={formatSeconds(estimated_seconds)} />
@@ -266,15 +274,16 @@ function StatusLastBlockInfo({ hash, height, address, reward, accumulate, filter
     );
 }
 
-function Status({ challenge, height, iters_per_sec, total_size, max_size, min_size, num_connections, status_string, last_block_info, vdf_pack }) {
+function Status({ challenge, height, iters_per_sec, total_size, max_size, min_size, difficulty, num_connections, status_string, last_block_info, vdf_pack }) {
     return (
         <>
             <div className="lg:w-[430px]">
                 <StatusBase iters_per_sec={iters_per_sec} num_connections={num_connections} status_string={status_string} max_size={max_size} min_size={min_size} />
-                <StatusArriving height={height} challenge={challenge} total_size={total_size} vdf_pack={vdf_pack} num_connections={num_connections} />
+                <StatusArriving height={height} challenge={challenge} total_size={total_size} vdf_pack={vdf_pack} num_connections={num_connections} difficulty={difficulty} />
             </div>
             <div className="lg:w-[430px]">
                 <StatusLastBlockInfo {...last_block_info} />
+                <StatusNetspace max_size={max_size} min_size={min_size} />
             </div>
         </>
     );
