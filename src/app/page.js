@@ -421,7 +421,7 @@ function SummaryNetspace({ netspace }) {
     }
     return (
         <>
-            <SectionTitle Icon={FaHdd} title="Difficulty variation in 7 days (GB)" />
+            <SectionTitle Icon={FaHdd} title="Difficulty variation in 7 days" />
             <div className="mb-4 lg:mb-8">
                 <StatusEntry name="Maximum netspace" value={formatNumberString(max_netspace)} />
                 <StatusEntry name="Minimum netspace" value={formatNumberString(min_netspace)} />
