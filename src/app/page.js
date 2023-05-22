@@ -208,17 +208,7 @@ function StatusBase({ iters_per_sec, num_connections, status_string }) {
     );
 }
 
-function StatusNetspace({ max_size, min_size }) {
-    return (
-        <>
-            <SectionTitle Icon={FaHdd} title="Netspace" />
-            <StatusEntry name="Maximum netspace" value={formatNumberString(max_size)} />
-            <StatusEntry name="Minimum netspace" value={formatNumberString(min_size)} />
-        </>
-    );
-}
-
-function StatusArriving({ height, challenge, total_size, vdf_pack, num_connections, difficulty }) {
+function StatusArriving({ height, challenge, total_size, max_size, vdf_pack, num_connections, difficulty }) {
     let requests = [];
     let timestamp = null;
     if (vdf_pack) {
@@ -246,6 +236,7 @@ function StatusArriving({ height, challenge, total_size, vdf_pack, num_connectio
             <StatusEntry name="Challenge" value={shortHashString(challenge)} />
             <StatusEntry name="Challenge difficulty" value={formatNumberString(difficulty)} />
             <StatusEntry name="Netspace" value={formatNumberString(total_size)} />
+            <StatusEntry name="Maximum" value={formatNumberString(max_size)} />
             <SectionTitle Icon={FaClock} title="Next block" />
             <StatusEntry name="Estimated time" value={formatSeconds(estimated_seconds)} />
             <StatusEntry name="Number of answers" value={`${formatNumberString(requests.length)}/${formatNumberString(num_connections)}`} />
@@ -279,11 +270,10 @@ function Status({ challenge, height, iters_per_sec, total_size, max_size, min_si
         <>
             <div className="lg:w-[430px]">
                 <StatusBase iters_per_sec={iters_per_sec} num_connections={num_connections} status_string={status_string} max_size={max_size} min_size={min_size} />
-                <StatusArriving height={height} challenge={challenge} total_size={total_size} vdf_pack={vdf_pack} num_connections={num_connections} difficulty={difficulty} />
+                <StatusArriving height={height} challenge={challenge} total_size={total_size} max_size={max_size} vdf_pack={vdf_pack} num_connections={num_connections} difficulty={difficulty} />
             </div>
             <div className="lg:w-[430px]">
                 <StatusLastBlockInfo {...last_block_info} />
-                <StatusNetspace max_size={max_size} min_size={min_size} />
             </div>
         </>
     );
