@@ -490,7 +490,7 @@ export default function Home() {
     }, []);
     return (
         <main className="flex flex-col items-center text-sm">
-            <div className="w-full bg-gray-100 lg:w-[1000px] lg:bg-gray-100">
+            <div className="w-full bg-gray-100 lg:w-[1000px] lg:bg-white">
                 <Title {...baseStatus} />
                 <div className="p-3">
                     <div className="lg:flex lg:flex-row lg:justify-between lg:p-8 lg:bg-gray-50 lg:rounded-2xl">
