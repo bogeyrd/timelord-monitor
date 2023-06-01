@@ -341,13 +341,13 @@ function SummaryPie({ hours, summary, num_blocks }) {
     );
 }
 
-function SummaryStatus({ num_blocks, high_height, low_height, hours }) {
+function SummaryStatus({ num_blocks, high_height, low_height, hours, avg_duration }) {
     const hours_str = makeDurationByHours(hours);
     return (
         <>
             <SectionTitle Icon={FaStream} title={'Summary in ' + hours_str} />
             <StatusEntry name="Total blocks" value={formatNumberString(num_blocks)} />
-            <StatusEntry name="Time per block" value={formatNumberString((hours * 60) / num_blocks) + ' min'} />
+            <StatusEntry name="Time per block" value={formatSeconds(avg_duration)} />
             <StatusEntry name="Block range" value={formatNumberString(low_height) + ' ... ' + formatNumberString(high_height)} />
         </>
     );
@@ -436,10 +436,10 @@ function SummaryNetspace({ netspace }) {
     );
 }
 
-function Summary({ num_blocks, high_height, low_height, hours, summary }) {
+function Summary({ num_blocks, high_height, low_height, hours, summary, avg_duration }) {
     return (
         <div className="lg:w-[430px]">
-            <SummaryStatus num_blocks={num_blocks} hours={hours} low_height={low_height} high_height={high_height} />
+            <SummaryStatus num_blocks={num_blocks} hours={hours} low_height={low_height} high_height={high_height} avg_duration={avg_duration} />
             <SummaryPie summary={summary} hours={hours} num_blocks={num_blocks} />
         </div>
     );
