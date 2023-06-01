@@ -2,7 +2,7 @@
 
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { FaBitcoin, FaLandmark, FaChartPie, FaStream, FaRocket, FaClock, FaHdd, FaHackerrank } from 'react-icons/fa';
+import { FaBitcoin, FaLandmark, FaChartPie, FaStream, FaRocket, FaClock, FaHdd, FaHackerrank, FaHubspot } from 'react-icons/fa';
 
 import 'chart.js/auto';
 import { Pie, Line } from 'react-chartjs-2';
@@ -265,7 +265,29 @@ function StatusLastBlockInfo({ hash, height, address, reward, accumulate, filter
     );
 }
 
-function Status({ challenge, height, iters_per_sec, total_size, max_size, min_size, difficulty, num_connections, status_string, last_block_info, vdf_pack }) {
+function StatusSupply({dist_height, calc, last}) {
+    const height = calc ? calc.height : 0;
+    const burned = calc ? calc.burned : 0;
+    const actual = calc ? calc.actual : 0;
+    const height2 = last ? last.height : 0;
+    const burned2 = last ? last.burned : 0;
+    const actual2 = last ? last.actual : 0;
+    return (
+        <>
+            <SectionTitle Icon={FaHubspot} title="Supply" />
+            <StatusEntry name="Interval heights" value={formatNumberString(dist_height)} />
+            <StatusEntry name="Calculated on height" value={formatNumberString(height)} />
+            <StatusEntry name="Burned" value={formatNumberString(burned)} />
+            <StatusEntry name="Total" value={formatNumberString(actual)} />
+            <SectionTitle Icon={FaHubspot} title="Current" />
+            <StatusEntry name="Current height" value={formatNumberString(height2)} />
+            <StatusEntry name="Current Burned" value={formatNumberString(burned2)} />
+            <StatusEntry name="Current Total" value={formatNumberString(actual2)} />
+        </>
+    );
+}
+
+function Status({ challenge, height, iters_per_sec, total_size, max_size, min_size, difficulty, num_connections, status_string, last_block_info, vdf_pack, supply }) {
     return (
         <>
             <div className="lg:w-[430px]">
@@ -274,6 +296,7 @@ function Status({ challenge, height, iters_per_sec, total_size, max_size, min_si
             </div>
             <div className="lg:w-[430px]">
                 <StatusLastBlockInfo {...last_block_info} />
+                <StatusSupply {...supply} />
             </div>
         </>
     );
