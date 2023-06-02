@@ -2,7 +2,7 @@
 
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { FaBitcoin, FaLandmark, FaChartPie, FaStream, FaRocket, FaClock, FaHdd, FaHackerrank, FaHubspot } from 'react-icons/fa';
+import { FaBitcoin, FaLandmark, FaChartPie, FaStream, FaRocket, FaClock, FaHdd, FaHackerrank, FaHubspot, FaCubes } from 'react-icons/fa';
 
 import 'chart.js/auto';
 import { Pie, Line } from 'react-chartjs-2';
@@ -246,6 +246,23 @@ function StatusArriving({ height, challenge, total_size, max_size, vdf_pack, num
     );
 }
 
+function StatusPledgeInfo({ retarget_min_heights, pledges }) {
+    const noterm = pledges ? pledges[0] : { lock_height: 0, actual_percent: 0 };
+    const term1 = pledges ? pledges[1] : { lock_height: 0, actual_percent: 0 };
+    const term2 = pledges ? pledges[2] : { lock_height: 0, actual_percent: 0 };
+    const term3 = pledges ? pledges[3] : { lock_height: 0, actual_percent: 0 };
+    return (
+        <>
+            <SectionTitle Icon={FaCubes} title="Pledge" />
+            <StatusEntry name="NoTerm" value={`${formatNumberString(noterm.lock_height)} blocks (${noterm.lock_height / 480}-day) ${noterm.actual_percent}%`} />
+            <StatusEntry name="Term1" value={`${formatNumberString(term1.lock_height)} blocks (${term1.lock_height / 480}-day) ${term1.actual_percent}%`} />
+            <StatusEntry name="Term2" value={`${formatNumberString(term2.lock_height)} blocks (${term2.lock_height / 480}-day) ${term2.actual_percent}%`} />
+            <StatusEntry name="Term3" value={`${formatNumberString(term3.lock_height)} blocks (${term3.lock_height / 480}-day) ${term3.actual_percent}%`} />
+            <StatusEntry name="Retarget Min." value={`${retarget_min_heights} blocks`} />
+        </>
+    );
+}
+
 function StatusLastBlockInfo({ hash, height, address, reward, accumulate, filter_bits, vdf_time, vdf_iters, vdf_speed, challenge_difficulty, block_difficulty }) {
     return (
         <>
@@ -265,7 +282,7 @@ function StatusLastBlockInfo({ hash, height, address, reward, accumulate, filter
     );
 }
 
-function StatusSupply({dist_height, calc, last}) {
+function StatusSupply({ dist_height, calc, last }) {
     const height = calc ? calc.height : 0;
     const burned = calc ? calc.burned : 0;
     const actual = calc ? calc.actual : 0;
@@ -287,12 +304,13 @@ function StatusSupply({dist_height, calc, last}) {
     );
 }
 
-function Status({ challenge, height, iters_per_sec, total_size, max_size, min_size, difficulty, num_connections, status_string, last_block_info, vdf_pack, supply }) {
+function Status({ challenge, height, iters_per_sec, total_size, max_size, min_size, difficulty, num_connections, status_string, last_block_info, vdf_pack, supply, pledge_info }) {
     return (
         <>
             <div className="lg:w-[430px]">
                 <StatusBase iters_per_sec={iters_per_sec} num_connections={num_connections} status_string={status_string} max_size={max_size} min_size={min_size} />
                 <StatusArriving height={height} challenge={challenge} total_size={total_size} max_size={max_size} vdf_pack={vdf_pack} num_connections={num_connections} difficulty={difficulty} />
+                <StatusPledgeInfo {...pledge_info} />
             </div>
             <div className="lg:w-[430px]">
                 <StatusLastBlockInfo {...last_block_info} />
