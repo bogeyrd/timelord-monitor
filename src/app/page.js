@@ -499,7 +499,7 @@ function Rank({ rank, title }) {
             {entries.map((entry, i) => {
                 return (
                     <div className="mb-2">
-                        <StatusEntry name="Address" strong_value value={entry.address} hi={i % 2 === 0} />
+                        <StatusEntry name="Farmer public-key" strong_value value={shortHashString(entry.farmer_pk)} hi={i % 2 === 0} />
                         <StatusEntry name="Produced blocks" value={formatNumberString(entry.count)} hi={i % 2 === 0} />
                         <StatusEntry name="Avg. Block Difficulty" value={formatNumberString(entry.average_difficulty)} hi={i % 2 === 0} />
                         <StatusEntry name="Rewards" value={formatNumberString(entry.total_reward) + ' BHD'} hi={i % 2 === 0} />
