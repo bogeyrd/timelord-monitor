@@ -208,7 +208,7 @@ function StatusBase({ iters_per_sec, num_connections, status_string }) {
     );
 }
 
-function StatusArriving({ height, challenge, total_size, max_size, vdf_pack, num_connections, difficulty }) {
+function StatusArriving({ height, challenge, total_size, max_size, estimated_netspace, vdf_pack, num_connections, difficulty }) {
     let requests = [];
     let timestamp = null;
     if (vdf_pack) {
@@ -237,6 +237,7 @@ function StatusArriving({ height, challenge, total_size, max_size, vdf_pack, num
             <StatusEntry name="Challenge difficulty" value={formatNumberString(difficulty)} />
             <StatusEntry name="Netspace" value={formatNumberString(total_size)} />
             <StatusEntry name="Maximum" value={formatNumberString(max_size)} />
+            <StatusEntry name="Estimated" value={formatNumberString(estimated_netspace)} />
             <SectionTitle Icon={FaClock} title="Next block" />
             <StatusEntry name="Estimated time" value={formatSeconds(estimated_seconds)} />
             <StatusEntry name="Number of answers" value={`${formatNumberString(requests.length)}/${formatNumberString(num_connections)}`} />
@@ -304,12 +305,12 @@ function StatusSupply({ dist_height, calc, last }) {
     );
 }
 
-function Status({ challenge, height, iters_per_sec, total_size, max_size, min_size, difficulty, num_connections, status_string, last_block_info, vdf_pack, supply, pledge_info }) {
+function Status({ challenge, height, iters_per_sec, total_size, max_size, min_size, difficulty, num_connections, status_string, last_block_info, vdf_pack, supply, pledge_info, estimated_netspace }) {
     return (
         <>
             <div className="lg:w-[430px]">
                 <StatusBase iters_per_sec={iters_per_sec} num_connections={num_connections} status_string={status_string} max_size={max_size} min_size={min_size} />
-                <StatusArriving height={height} challenge={challenge} total_size={total_size} max_size={max_size} vdf_pack={vdf_pack} num_connections={num_connections} difficulty={difficulty} />
+                <StatusArriving height={height} challenge={challenge} total_size={total_size} max_size={max_size} vdf_pack={vdf_pack} num_connections={num_connections} difficulty={difficulty} estimated_netspace={estimated_netspace} />
                 <StatusPledgeInfo {...pledge_info} />
             </div>
             <div className="lg:w-[430px]">
