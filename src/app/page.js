@@ -58,6 +58,7 @@ function makeDurationByHours(hours) {
 
 function formatNumberString(n) {
     if (typeof n === 'number') {
+        n = Math.floor(n * 100) / 100;
         return n.toLocaleString();
     }
     return replaceUndefined(n);
@@ -297,6 +298,7 @@ function StatusSupply({ dist_height, calc, last }) {
             <StatusEntry name="Calculated on height" value={formatNumberString(height)} />
             <StatusEntry name="Burned" value={formatNumberString(burned)} />
             <StatusEntry name="Total" value={formatNumberString(actual)} />
+            <StatusEntry name="Minimal pledge amount" value={formatNumberString(actual / 2016)} />
             <SectionTitle Icon={FaHubspot} title="Current" />
             <StatusEntry name="Current height" value={formatNumberString(height2)} />
             <StatusEntry name="Current Burned" value={formatNumberString(burned2)} />
