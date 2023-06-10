@@ -156,9 +156,9 @@ function StatusEntry({ name, value, error, hi, strong_value }) {
     }
     if (typeof hi !== 'undefined') {
         if (hi) {
-            clsName = clsName + ' bg-gray-50 lg:bg-gray-100';
+            clsName = clsName + ' bg-gray-50 lg:bg-gray-100 dark:bg-gray-600 dark:lg:bg-gray-600';
         } else {
-            clsName = clsName + ' bg-gray-200';
+            clsName = clsName + ' bg-gray-200 dark:bg-gray-600 dark:lg:bg-gray-600';
         }
     }
     let clsNameVal = 'font-mono text-right grow';
@@ -184,7 +184,7 @@ function Description({ desc }) {
 
 function Title({ server_ip }) {
     return (
-        <div className="flex flex-row p-2 bg-gray-300 lg:bg-inherit lg:flex-col lg:pt-8">
+        <div className="flex flex-row p-2 bg-gray-300 dark:bg-gray-700 lg:bg-inherit lg:flex-col lg:pt-8">
             <div className="text-xl font-bold w-auto lg:self-center lg:text-3xl lg:pb-2">BitcoinHD chain</div>
             <div className="text-xs text-right grow self-center">
                 <span className="font-bold">Timelord service</span> <span className="underline">{server_ip}</span>
@@ -534,10 +534,10 @@ export default function Home() {
     }, []);
     return (
         <main className="flex flex-col items-center text-sm">
-            <div className="w-full bg-gray-100 lg:w-[1000px] lg:bg-white">
+            <div className="w-full bg-gray-100 lg:w-[1000px] lg:bg-white dark:bg-gray-900 dark:lg:bg-gray-900">
                 <Title {...baseStatus} />
                 <div className="p-3">
-                    <div className="lg:flex lg:flex-row lg:justify-between lg:p-8 lg:bg-gray-50 lg:rounded-2xl">
+                    <div className="lg:flex lg:flex-row lg:justify-between lg:p-8 lg:bg-gray-50 lg:rounded-2xl dark:lg:bg-gray-700">
                         <Status {...baseStatus} />
                     </div>
                     <div className="lg:p-8">
@@ -547,7 +547,7 @@ export default function Home() {
                         <Summary {...summary24} />
                         <Summary {...summary24_7} />
                     </div>
-                    <div className="lg:bg-gray-50 lg:rounded-2xl">
+                    <div className="lg:bg-gray-50 dark:lg:bg-gray-700 lg:rounded-2xl">
                         <div className="mt-4 lg:p-8">
                             <Rank title="Rank" rank={rank} />
                         </div>
