@@ -13,7 +13,7 @@ import { Pie, Line } from 'react-chartjs-2';
 
 function getApiHost() {
     if (process.env.NODE_ENV === 'production') {
-        return process.env.apiUrl;
+        return process.env.NEXT_PUBLIC_API_URL;
     }
     return 'http://localhost:39393';
 }
