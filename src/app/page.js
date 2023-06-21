@@ -197,13 +197,14 @@ function Title({ server_ip }) {
  * Base status
  */
 
-function StatusBase({ iters_per_sec, num_connections, status_string }) {
+function StatusBase({ iters_per_sec, num_connections, fork_height, status_string }) {
     return (
         <>
             <SectionTitle Icon={FaLandmark} title="Base" />
             <StatusEntry name="Version" value={'beta 0.1.0'} />
             <StatusEntry name="VDF speed" value={formatNumberString(iters_per_sec) + ' ips'} />
             <StatusEntry name="Connections" value={num_connections} />
+            <StatusEntry name="Fork height" value={fork_height} />
             <StatusEntry name="Status" value={status_string} error={status_string !== 'good'} />
         </>
     );
@@ -307,11 +308,11 @@ function StatusSupply({ dist_height, calc, last }) {
     );
 }
 
-function Status({ challenge, height, iters_per_sec, total_size, max_size, min_size, difficulty, num_connections, status_string, last_block_info, vdf_pack, supply, pledge_info, estimated_netspace }) {
+function Status({ challenge, height, iters_per_sec, total_size, max_size, min_size, difficulty, num_connections, status_string, last_block_info, vdf_pack, supply, pledge_info, estimated_netspace, fork_height }) {
     return (
         <>
             <div className="lg:w-[430px]">
-                <StatusBase iters_per_sec={iters_per_sec} num_connections={num_connections} status_string={status_string} max_size={max_size} min_size={min_size} />
+                <StatusBase iters_per_sec={iters_per_sec} num_connections={num_connections} status_string={status_string} max_size={max_size} min_size={min_size} fork_height={fork_height} />
                 <StatusArriving height={height} challenge={challenge} total_size={total_size} max_size={max_size} vdf_pack={vdf_pack} num_connections={num_connections} difficulty={difficulty} estimated_netspace={estimated_netspace} />
                 <StatusPledgeInfo {...pledge_info} />
             </div>
