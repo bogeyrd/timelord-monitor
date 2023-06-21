@@ -239,7 +239,7 @@ function StatusArriving({ height, challenge, total_size, max_size, estimated_net
             <StatusEntry name="Challenge difficulty" value={formatNumberString(difficulty)} />
             <StatusEntry name="Netspace" value={formatNumberString(total_size)} />
             <StatusEntry name="Maximum" value={formatNumberString(max_size)} />
-            <StatusEntry name="Estimated" value={formatNumberString(estimated_netspace)} />
+            <StatusEntry name="Estimated (TiB)" value={formatNumberString(estimated_netspace)} />
             <SectionTitle Icon={FaClock} title="Next block" />
             <StatusEntry name="Estimated time" value={formatSeconds(estimated_seconds)} />
             <StatusEntry name="Number of answers" value={`${formatNumberString(requests.length)}/${formatNumberString(num_connections)}`} />
