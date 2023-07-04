@@ -266,7 +266,7 @@ function StatusPledgeInfo({ retarget_min_heights, pledges }) {
     );
 }
 
-function StatusLastBlockInfo({ hash, height, address, reward, accumulate, filter_bits, vdf_time, vdf_iters, vdf_speed, challenge_difficulty, block_difficulty }) {
+function StatusLastBlockInfo({ hash, height, address, reward, accumulate, filter_bits, vdf_time, vdf_iters, vdf_iters_req, vdf_speed, challenge_difficulty, block_difficulty }) {
     return (
         <>
             <SectionTitle Icon={FaBitcoin} title="Last block" />
@@ -279,6 +279,7 @@ function StatusLastBlockInfo({ hash, height, address, reward, accumulate, filter
             <StatusEntry name="VDF speed" value={formatNumberString(vdf_speed)} />
             <StatusEntry name="VDF time" value={vdf_time} />
             <StatusEntry name="VDF iterations" value={formatNumberString(vdf_iters)} />
+            <StatusEntry name="VDF iterations (required)" value={formatNumberString(vdf_iters_req)} />
             <StatusEntry name="Challenge difficulty" value={formatNumberString(challenge_difficulty)} />
             <StatusEntry name="Block difficulty" value={formatNumberString(block_difficulty)} />
         </>
