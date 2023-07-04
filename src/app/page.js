@@ -351,6 +351,7 @@ function SummaryPie({ hours, summary, num_blocks }) {
         [70, 250, 70],
         [70, 220, 70],
         [70, 200, 70],
+        [70, 180, 70],
         [250, 0, 0],
         [100, 0, 0],
     ];
@@ -359,7 +360,7 @@ function SummaryPie({ hours, summary, num_blocks }) {
         return `rgba(${color[0]}, ${color[1]}, ${color[2]}, ${alpha})`;
     };
 
-    const labels = ['1m-3m', '3m-10m', '10m-30m', '30m-60m', '>60m'];
+    const labels = ['0m-3m', '3m-5m', '5m-10m', '10m-30m', '30m-60m', '>60m'];
     let count_blocks = 0;
     for (let i = 0; i < summary.length + 1; ++i) {
         let entry;
