@@ -185,7 +185,7 @@ function Description({ desc }) {
 function Title({ server_ip }) {
     return (
         <div className="flex flex-row p-2 bg-gray-300 dark:bg-gray-700 lg:bg-inherit lg:flex-col lg:pt-8">
-            <div className="text-xl font-bold w-auto lg:self-center lg:text-3xl lg:pb-2">BitcoinHD chain</div>
+            <div className="text-xl font-bold w-auto lg:self-center lg:text-3xl lg:pb-2">DePINC chain</div>
             <div className="text-xs text-right grow self-center">
                 <span className="font-bold">Timelord service</span> <span className="underline">{server_ip}</span>
             </div>
